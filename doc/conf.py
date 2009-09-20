@@ -44,7 +44,7 @@ copyright = "Copyright &#169; %s The <a href='%s'>%s</a> Project. All rights res
 
 # We look for the __init__.py file in the current Plasma source tree
 # and replace the values accordingly.
-release = '.'.join(map(lambda x: str(x), pyamf.__version__))
+release = '.'.join(map(lambda x: str(x), plasma.__version__))
 version = release[:3]
 
 # There are two options for replacing |today|: either, you set today to some
