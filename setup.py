@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2009 The Plasma Project.
+# Copyright (c) 2009 The Plasma Project.
 # See LICENSE for details.
 
 import os
@@ -14,7 +14,7 @@ from setuptools.command import test
 
 class TestCommand(test.test):
     """
-    A custom test class to ensure that if twisted is available, it runs the
+    A custom test class to ensure that if Twisted is available, it runs the
     tests.
     """
 
