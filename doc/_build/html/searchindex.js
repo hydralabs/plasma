@@ -1,1 +1,0 @@
-Search.setIndex({desctypes:{},terms:{index:0,search:0,welcom:0,modul:0,indic:0,content:0,tabl:0,document:0,plasma:0,page:0},titles:["Welcome to Plasma&#8217;s documentation!"],modules:{},descrefs:{},filenames:["index"]})
