@@ -2,6 +2,7 @@
 # See LICENSE for details.
 
 import os
+import sys
 
 from ez_setup import use_setuptools
 
@@ -16,6 +17,9 @@ def get_install_requirements():
     target platform.
     """
     install_requires = ['PyAMF>=0.5.1', 'zope.interface']
+
+    if sys.version_info < (2, 5):
+        install_requires.extend(['uuid>=1.30'])
 
     return install_requires
 
