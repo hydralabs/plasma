@@ -22,7 +22,7 @@ ez_setup.py_ and run::
 
     python ez_setup.py
 
-After `easy_install` is installed, run `easy_install pyamf` again. If
+After `easy_install` is installed, run `easy_install plasma` again. If
 you run into problems, try the manual installation instructions below.
 
 To upgrade your existing Plasma installation to the latest version
