@@ -6,8 +6,6 @@ Flex Data Management Service implementation.
 
 This module contains the message classes used with Flex Data Management
 Service.
-
-@since: 0.1.0
 """
 
 import pyamf

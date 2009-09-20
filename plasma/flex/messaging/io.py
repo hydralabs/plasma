@@ -248,4 +248,12 @@ def unproxy_object(obj):
     return obj
 
 
+if pyamf.__version__ < (1, 0):
+    from pyamf import flex
+
+    pyamf.unregister_class(flex.ObjectProxy)
+    pyamf.unregister_class(flex.ArrayCollection)
+
+
 pyamf.register_package(globals(), package='flex.messaging.io')
+
