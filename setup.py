@@ -9,6 +9,35 @@ from ez_setup import use_setuptools
 use_setuptools()
 
 from setuptools import setup, find_packages
+from setuptools.command import test
+
+
+class TestCommand(test.test):
+    """
+    A custom test class to ensure that if twisted is available, it runs the
+    tests.
+    """
+
+    def run_twisted(self):
+        from twisted.trial import runner
+        from twisted.trial import reporter
+
+        from plasma.test import suite
+
+        r = runner.TrialRunner(reporter.VerboseTextReporter)
+        return r.run(suite())
+
+    def run_tests(self):
+        import logging
+        logging.basicConfig()
+        logging.getLogger().setLevel(logging.CRITICAL)
+
+        try:
+            import twisted
+
+            return self.run_twisted()
+        except ImportError:
+            return test.test.run_tests(self)
 
 
 def get_install_requirements():
@@ -40,10 +69,13 @@ setup(
     author='The Plasma Project',
     install_requires=get_install_requirements(),
     keywords=keyw,
-    packages = find_packages(exclude=[''*.tests'']),
-    license = 'MIT',
-    platforms = ['any'],
-    classifiers = [
+    packages=find_packages(exclude=['*.tests']),
+    license='MIT',
+    platforms=['any'],
+    cmdclass={
+        'test': TestCommand
+    },
+    classifiers=[
         'Development Status :: 1 - Planning',
         'Natural Language :: English',
         'Intended Audience :: Developers',
@@ -55,7 +87,6 @@ setup(
         'Programming Language :: Python :: 2.4',
         'Programming Language :: Python :: 2.5',
         'Programming Language :: Python :: 2.6',
-        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
