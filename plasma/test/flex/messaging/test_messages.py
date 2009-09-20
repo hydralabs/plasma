@@ -107,6 +107,56 @@ class AcknowledgeMessageTestCase(unittest.TestCase):
         self.assertRaises(pyamf.DecodeError, a.__readamf__, Mock())
 
 
+class CommandMessageTestCase(unittest.TestCase):
+    """
+    Tests for L{messages.CommandMessage}
+    """
+
+    def test_too_many_flags(self):
+        """
+        Test to check that if more than 2 flags are received in __readamf__
+        an error will be thrown.
+        """
+        class Mock:
+            b = [0x80, 0x00, 0x00, 0x80, 0x00]
+
+            def __init__(self):
+                self.i = iter(self.b)
+
+            def readUnsignedByte(self):
+                return self.i.next()
+
+            def readObject(self):
+                return {}
+
+        a = messages.CommandMessage()
+
+        self.assertRaises(pyamf.DecodeError, a.__readamf__, Mock())
+
+    def test_flags_no_operation(self):
+        """
+        Test to ensure that 0 is written for the command flag when operation
+        is C{None}
+        """
+        class MockDataOutput:
+            written = []
+
+            def writeUnsignedByte(self, byte):
+                self.written.append(byte)
+
+            def writeObject(self, object):
+                self.written.append(object)
+
+        a = messages.CommandMessage()
+        b = MockDataOutput()
+
+        self.assertEquals(a.operation, None)
+
+        a.__writeamf__(b)
+
+        self.assertEquals(b.written, [0, 1, None, 0])
+
+
 class EncodingTestCase(unittest.TestCase):
     """
     Encoding tests for L{messages}
