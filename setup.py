@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2009 The Tape Project.
+# Copyright (c) 2007-2009 The Plasma Project.
 # See LICENSE for details.
 
 import os
