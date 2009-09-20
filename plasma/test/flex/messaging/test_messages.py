@@ -31,6 +31,81 @@ class AbstractMessageTestCase(unittest.TestCase):
             raise
             self.fail()
 
+    def test_too_many_flags(self):
+        """
+        Test to check that if more than 2 flags are received in __readamf__
+        an error will be thrown.
+        """
+        class Mock:
+            b = [0x80, 0x80, 0x02]
+
+            def __init__(self):
+                self.i = iter(self.b)
+
+            def readUnsignedByte(self):
+                return self.i.next()
+
+            def readObject(self):
+                return {}
+
+        a = messages.AbstractMessage()
+
+        self.assertRaises(pyamf.DecodeError, a.__readamf__, Mock())
+
+
+class AsyncMessageTestCase(unittest.TestCase):
+    """
+    Tests for L{messages.AsyncMessage}
+    """
+
+    def test_too_many_flags(self):
+        """
+        Test to check that if more than 2 flags are received in __readamf__
+        an error will be thrown.
+        """
+        class Mock:
+            b = [0x80, 0x00, 0x80, 0x00]
+
+            def __init__(self):
+                self.i = iter(self.b)
+
+            def readUnsignedByte(self):
+                return self.i.next()
+
+            def readObject(self):
+                return {}
+
+        a = messages.AsyncMessage()
+
+        self.assertRaises(pyamf.DecodeError, a.__readamf__, Mock())
+
+
+class AcknowledgeMessageTestCase(unittest.TestCase):
+    """
+    Tests for L{messages.AcknowledgeMessage}
+    """
+
+    def test_too_many_flags(self):
+        """
+        Test to check that if more than 2 flags are received in __readamf__
+        an error will be thrown.
+        """
+        class Mock:
+            b = [0x80, 0x00, 0x00, 0x80, 0x00]
+
+            def __init__(self):
+                self.i = iter(self.b)
+
+            def readUnsignedByte(self):
+                return self.i.next()
+
+            def readObject(self):
+                return {}
+
+        a = messages.AcknowledgeMessage()
+
+        self.assertRaises(pyamf.DecodeError, a.__readamf__, Mock())
+
 
 class EncodingTestCase(unittest.TestCase):
     """
@@ -103,14 +178,18 @@ class SmallMessageTestCase(unittest.TestCase):
         self.assertEquals(msg.destination, None)
         self.assertEquals(msg.timeToLive, None)
 
-        self.assertEquals(msg.timestamp, datetime.datetime(2009, 8, 19, 11, 24, 43, 985000))
+        self.assertEquals(msg.timestamp,
+            datetime.datetime(2009, 8, 19, 11, 24, 43, 985000))
         self.assertEquals(msg.headers, {
             'DSMessagingVersion': 1.0,
             'DSId': u'EE0D161D-C11D-25CB-8DBE-3B77B54B55D9'
         })
-        self.assertEquals(msg.clientId, uuid.UUID('ee0d161d-c128-265b-c980-524b9b45c6c4'))
-        self.assertEquals(msg.messageId, uuid.UUID('ee0d161d-c13d-8ea3-e010-efad3be5c56a'))
-        self.assertEquals(msg.correlationId, uuid.UUID('538483db-a9c8-ca4d-6095-3266db51c93c'))
+        self.assertEquals(msg.clientId,
+            uuid.UUID('ee0d161d-c128-265b-c980-524b9b45c6c4'))
+        self.assertEquals(msg.messageId,
+            uuid.UUID('ee0d161d-c13d-8ea3-e010-efad3be5c56a'))
+        self.assertEquals(msg.correlationId,
+            uuid.UUID('538483db-a9c8-ca4d-6095-3266db51c93c'))
         self.assertEquals(self.buffer.remaining(), 0)
 
         # now encode the msg to check that encoding is byte for byte the same
@@ -119,7 +198,9 @@ class SmallMessageTestCase(unittest.TestCase):
         self.assertEquals(buffer, bytes)
 
     def test_command(self):
-        bytes = ('\n\x07\x07DSC\x88\x02\n\x0b\x01\tDSId\x06IEE0D161D-C11D-25CB-8DBE-3B77B54B55D9\x01\x0c!\xc0\xdf\xb7|\xd6\xee$1s\x152f\xe11\xa8f\x01\x06\x01\x01\x04\x02')
+        bytes = ('\n\x07\x07DSC\x88\x02\n\x0b\x01\tDSId\x06IEE0D161D-C11D-'
+            '25CB-8DBE-3B77B54B55D9\x01\x0c!\xc0\xdf\xb7|\xd6\xee$1s\x152f'
+            '\xe11\xa8f\x01\x06\x01\x01\x04\x02')
 
         self.buffer.write(bytes)
         self.buffer.seek(0)
@@ -136,7 +217,8 @@ class SmallMessageTestCase(unittest.TestCase):
             'DSId': u'EE0D161D-C11D-25CB-8DBE-3B77B54B55D9'
         })
         self.assertEquals(msg.clientId, None)
-        self.assertEquals(msg.messageId, uuid.UUID('c0dfb77c-d6ee-2431-7315-3266e131a866'))
+        self.assertEquals(msg.messageId,
+            uuid.UUID('c0dfb77c-d6ee-2431-7315-3266e131a866'))
         self.assertEquals(msg.correlationId, u'')
         self.assertEquals(self.buffer.remaining(), 0)
 
@@ -144,9 +226,6 @@ class SmallMessageTestCase(unittest.TestCase):
         buffer = pyamf.encode(msg, encoding=pyamf.AMF3).getvalue()
 
         self.assertEquals(buffer, bytes)
-
-    def test_async(self):
-        pass
 
     def test_getmessage(self):
         """
@@ -181,7 +260,11 @@ class SmallMessageTestCase(unittest.TestCase):
         m = a.getSmallMessage()
 
         k = kwargs.copy()
-        k.update({'operation': 'yay', 'correlationId': None, 'messageRefType': None})
+        k.update({
+            'operation': 'yay',
+            'correlationId': None,
+            'messageRefType': None
+        })
 
         self.assertTrue(isinstance(m, messages.CommandMessageExt))
         self.assertEquals(m.__dict__, k)

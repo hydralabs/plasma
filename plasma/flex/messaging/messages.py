@@ -92,13 +92,13 @@ class AbstractMessage(object):
     ))
 
     def __init__(self, *args, **kwargs):
-        self.body = kwargs.get('body', None)
-        self.clientId = kwargs.get('clientId', None)
-        self.destination = kwargs.get('destination', None)
-        self.headers = kwargs.get('headers', {})
-        self.messageId = kwargs.get('messageId', None)
-        self.timestamp = kwargs.get('timestamp', None)
-        self.timeToLive = kwargs.get('timeToLive', None)
+        self.body = kwargs.pop('body', None)
+        self.clientId = kwargs.pop('clientId', None)
+        self.destination = kwargs.pop('destination', None)
+        self.headers = kwargs.pop('headers', {})
+        self.messageId = kwargs.pop('messageId', None)
+        self.timestamp = kwargs.pop('timestamp', None)
+        self.timeToLive = kwargs.pop('timeToLive', None)
 
     def __repr__(self):
         m = '<%s ' % self.__class__.__name__
