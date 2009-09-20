@@ -10,11 +10,13 @@ Flex compatibility tests.
 import unittest
 
 from plasma.flex.messaging import io
+import pyamf
 from pyamf import amf0, amf3
 
 
 class ArrayCollectionTestCase(unittest.TestCase):
     """
+    Tests for L{io.ArrayCollection}
     """
 
     def test_create(self):
@@ -63,6 +65,45 @@ class ArrayCollectionTestCase(unittest.TestCase):
         self.assertTrue(isinstance(x, io.ArrayCollection))
         self.assertEquals(x, ['foo', 'bar'])
 
+    def test_repr(self):
+        a = io.ArrayCollection()
+        b = io.ArrayCollection([1, 2, 3])
+        c = io.ArrayCollection([u'∑œ', 'd'])
+
+        class X(object):
+            def __iter__(self):
+                return iter(['foo', 'bar', 'baz'])
+
+        d = io.ArrayCollection(X())
+
+        self.assertEquals(repr(a), '<flex.messaging.io.ArrayCollection []>')
+        self.assertEquals(repr(b),
+            '<flex.messaging.io.ArrayCollection [1, 2, 3]>')
+        self.assertEquals(repr(c),
+            '<flex.messaging.io.ArrayCollection [u\'\\u2211\\u0153\', \'d\']>')
+        self.assertEquals(repr(d),
+            '<flex.messaging.io.ArrayCollection [\'foo\', \'bar\', \'baz\']>')
+
+    def test_read_external_no_iterate(self):
+        """
+        Test to ensure an error is thrown if an object that cannot be iterated
+        over is read from the stream.
+        """
+        class MockDataInput:
+            def readObject(self):
+                return object()
+
+        a = io.ArrayCollection()
+        self.assertRaises(pyamf.DecodeError, a.__readamf__, MockDataInput())
+
+    def test_readonly_length(self):
+        """
+        Trying to set the length should cause an error
+        """
+        a = io.ArrayCollection()
+
+        self.assertRaises(AttributeError, setattr, a, 'length', 2)
+
 
 class ArrayCollectionAPITestCase(unittest.TestCase):
     def test_addItem(self):
@@ -96,6 +137,7 @@ class ArrayCollectionAPITestCase(unittest.TestCase):
 
         self.assertRaises(IndexError, a.getItemAt, -1)
         self.assertRaises(IndexError, a.getItemAt, 3)
+        self.assertRaises(IndexError, a.getItemAt, 4)
 
     def test_getItemIndex(self):
         a = io.ArrayCollection(['a', 'b', 'c'])
@@ -119,6 +161,7 @@ class ArrayCollectionAPITestCase(unittest.TestCase):
 
         self.assertRaises(IndexError, a.removeItemAt, -1)
         self.assertRaises(IndexError, a.removeItemAt, 3)
+        self.assertRaises(IndexError, a.removeItemAt, 4)
 
         self.assertEquals(a.removeItemAt(1), 'b')
         self.assertEquals(a, ['a', 'c'])
@@ -133,12 +176,24 @@ class ArrayCollectionAPITestCase(unittest.TestCase):
     def test_setItemAt(self):
         a = io.ArrayCollection(['a', 'b', 'c'])
 
+        self.assertRaises(IndexError, a.setItemAt, -1, -1)
+        self.assertRaises(IndexError, a.setItemAt, -1, 4)
+
         self.assertEquals(a.setItemAt('d', 1), 'b')
         self.assertEquals(a, ['a', 'd', 'c'])
         self.assertEquals(a.length, 3)
 
+    def test_toArray(self):
+        a = io.ArrayCollection(['a', 'b', 'c'])
+
+        self.assertEquals(a.toArray(), a)
+
 
 class ObjectProxyTestCase(unittest.TestCase):
+    """
+    Tests for L{io.ObjectProxy}
+    """
+
     def test_encode(self):
         x = io.ObjectProxy(dict(a='spam', b=5))
 
@@ -161,3 +216,43 @@ class ObjectProxyTestCase(unittest.TestCase):
 
         x._amf_object = None
         self.assertEquals(x._amf_object, None)
+
+        y = pyamf.ASObject()
+        y.foo = 'foo'
+        y.bar = 'bar'
+
+        x._amf_object = y
+
+        self.assertEquals(getattr(x, 'foo'), 'foo')
+        self.assertEquals(getattr(x, 'bar'), 'bar')
+        self.assertEquals(getattr(x, '_amf_object'), y)
+
+    def test_repr(self):
+        a = io.ObjectProxy(u'∆∑')
+
+        self.assertEquals(repr(a), "<flex.messaging.io.ObjectProxy u'\u2206\u2211'>")
+
+
+class UnproxyTestCase(unittest.TestCase):
+    """
+    Tests for L{io.unproxy_object}
+    """
+
+    def test_objectproxy(self):
+        x = {'foo': 'foo', 'bar': 'bar'}
+
+        a = io.ObjectProxy(x)
+
+        self.assertEquals(io.unproxy_object(a), x)
+
+    def test_arraycollection(self):
+        x = [1, 2, 3]
+
+        a = io.ArrayCollection(x)
+
+        self.assertEquals(io.unproxy_object(a), x)
+
+    def test_other(self):
+        x = [1, 2, 3]
+
+        self.assertEquals(io.unproxy_object(x), x)

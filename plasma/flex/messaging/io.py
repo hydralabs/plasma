@@ -215,12 +215,9 @@ class ObjectProxy(object):
             self._amf_object = object
 
     def __repr__(self):
-        return "<flex.messaging.io.ObjectProxy %s>" % self._amf_object
+        return "<flex.messaging.io.ObjectProxy %r>" % self._amf_object
 
     def __getattr__(self, name):
-        if name == '_amf_object':
-            return self.__dict__['_amf_object']
-
         return getattr(self.__dict__['_amf_object'], name)
 
     def __setattr__(self, name, value):
