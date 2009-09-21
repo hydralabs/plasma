@@ -18,18 +18,43 @@ from plasma.flex.messaging import messages
 
 class AbstractMessageTestCase(unittest.TestCase):
     """
+    Tests for L{messages.AbstractMessage}
     """
+
+    def test_create(self):
+        a = messages.AbstractMessage()
+
+        self.assertEquals(a.__dict__, {
+            'body': None,
+            'timestamp': None,
+            'destination': None,
+            'clientId': None,
+            'headers': {},
+            'timeToLive': None,
+            'messageId': None
+        })
+
+    def test_kwargs(self):
+        a = messages.AbstractMessage(body=[], timestamp='foo', clientId='baz',
+            destination='bar', headers='gak', timeToLive='spam',
+            messageId='eggs', python='cool')
+
+        self.assertEquals(a.__dict__, {
+            'body': [],
+            'timestamp': 'foo',
+            'destination': 'bar',
+            'clientId': 'baz',
+            'headers': 'gak',
+            'timeToLive': 'spam',
+            'messageId': 'eggs'
+        })
 
     def test_repr(self):
         a = messages.AbstractMessage()
 
         a.body = u'é,è'
 
-        try:
-            repr(a)
-        except:
-            raise
-            self.fail()
+        repr(a)
 
     def test_too_many_flags(self):
         """

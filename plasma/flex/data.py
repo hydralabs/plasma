@@ -1,4 +1,4 @@
-# Copyright (c) 2007-2009 The PyAMF Project.
+# Copyright (c) 2009 The Plasma Project.
 # See LICENSE.txt for details.
 
 """
@@ -33,19 +33,19 @@ class DataMessage(messages.AsyncMessage):
 
     @see: U{DataMessage on Livedocs (external)
     <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>}
+    @ivar identity: Provides access to the identity map which defines the
+        unique identity of the item affected by this DataMessage (relevant for
+        create/update/delete but not fill operations).
+    @ivar operation: Provides access to the operation/command of this
+        DataMessage. Operations indicate how the remote destination should
+        process this message.
     """
 
     def __init__(self, **kwargs):
         AsyncMessage.__init__(self, **kwargs)
-        #: Provides access to the identity map which defines the
-        #: unique identity of the item affected by this DataMessage
-        #: (relevant for create/update/delete but not fill operations).
-        self.identity = None
-        #: Provides access to the operation/command of this DataMessage.
-        #:
-        #: Operations indicate how the remote destination should process
-        #: this message.
-        self.operation = None
+
+        self.identity = kwargs.pop('identity', None)
+        self.operation = kwargs.pop('operation', None)
 
 
 class SequencedMessage(messages.AcknowledgeMessage):
@@ -56,8 +56,8 @@ class SequencedMessage(messages.AcknowledgeMessage):
     <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/SequencedMessage.html>}
     """
 
-    def __init__(self):
-        AcknowledgeMessage.__init__(self)
+    def __init__(self, **kwargs):
+        AcknowledgeMessage.__init__(self, **kwargs)
         #: Provides access to the sequence id for this message.
         #:
         #: The sequence id is a unique identifier for a sequence

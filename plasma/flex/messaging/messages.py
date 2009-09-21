@@ -91,7 +91,7 @@ class AbstractMessage(object):
         ['clientId', 'messageId']
     ))
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.body = kwargs.pop('body', None)
         self.clientId = kwargs.pop('clientId', None)
         self.destination = kwargs.pop('destination', None)
@@ -214,10 +214,10 @@ class AsyncMessage(AbstractMessage):
     class __amf__:
         static = ('correlationId',)
 
-    def __init__(self, *args, **kwargs):
-        AbstractMessage.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs):
+        AbstractMessage.__init__(self, **kwargs)
 
-        self.correlationId = kwargs.get('correlationId', None)
+        self.correlationId = kwargs.pop('correlationId', None)
 
     def __readamf__(self, input):
         AbstractMessage.__readamf__(self, input)
@@ -300,8 +300,10 @@ class CommandMessage(AsyncMessage):
     <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/CommandMessage.html>}
 
     @ivar operation: The command
-    @type operation: C{int}
-    @ivar messageRefType: hmm, not sure about this one.
+    @type operation: C{str}
+    @ivar messageRefType: Remote destination belonging to a specific service,
+        based upon whether this message type matches the message type the
+        service handles.
     @type messageRefType: C{str}
     """
 
@@ -344,13 +346,10 @@ class CommandMessage(AsyncMessage):
     class __amf__:
         static = ('operation',)
 
-    def __init__(self, *args, **kwargs):
-        AsyncMessage.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs):
+        AsyncMessage.__init__(self, **kwargs)
 
-        self.operation = kwargs.get('operation', None)
-        #: Remote destination belonging to a specific service, based upon
-        #: whether this message type matches the message type the service
-        #: handles.
+        self.operation = kwargs.pop('operation', None)
         self.messageRefType = kwargs.get('messageRefType', None)
 
     def __readamf__(self, input):
@@ -371,6 +370,8 @@ class CommandMessage(AsyncMessage):
         if byte & 0x01:
             self.operation = input.readObject()
 
+        # what about messageRefType here?
+
     def __writeamf__(self, output):
         AsyncMessage.__writeamf__(self, output)
 
@@ -382,7 +383,7 @@ class CommandMessage(AsyncMessage):
 
     def getSmallMessage(self):
         """
-        Return a ISmallMessage representation of this command message.
+        Return an ISmallMessage representation of this command message.
         """
         return CommandMessageExt(**self.__dict__)
 
@@ -392,6 +393,16 @@ class ErrorMessage(AcknowledgeMessage):
     I am the Flex error message to be returned to the client.
 
     This class is used to report errors within the messaging system.
+
+    @ivar extendedData: Extended data that the remote destination has chosen
+        to associate with this error to facilitate custom error processing on
+        the client.
+    @ivar faultCode: Fault code for the error.
+    @type faultCode: C{str}
+    @ivar faultDetail: Detailed description of what caused the error.
+    @ivar faultString: A simple description of the error.
+    @ivar rootCause: Should a traceback exist for the error, this property
+        contains the message.
 
     @see: U{ErrorMessage on Livedocs (external)
     <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/ErrorMessage.html>}
@@ -410,20 +421,14 @@ class ErrorMessage(AcknowledgeMessage):
         static = ('extendedData', 'faultCode', 'faultDetail', 'faultString',
             'rootCause')
 
-    def __init__(self, *args, **kwargs):
-        AcknowledgeMessage.__init__(self, *args, **kwargs)
-        #: Extended data that the remote destination has chosen to associate
-        #: with this error to facilitate custom error processing on the client.
-        self.extendedData = kwargs.get('extendedData', {})
-        #: Fault code for the error.
-        self.faultCode = kwargs.get('faultCode', None)
-        #: Detailed description of what caused the error.
-        self.faultDetail = kwargs.get('faultDetail', None)
-        #: A simple description of the error.
-        self.faultString = kwargs.get('faultString', None)
-        #: Should a traceback exist for the error, this property contains the
-        #: message.
-        self.rootCause = kwargs.get('rootCause', {})
+    def __init__(self, **kwargs):
+        AcknowledgeMessage.__init__(self, **kwargs)
+
+        self.extendedData = kwargs.pop('extendedData', {})
+        self.faultCode = kwargs.pop('faultCode', None)
+        self.faultDetail = kwargs.pop('faultDetail', None)
+        self.faultString = kwargs.pop('faultString', None)
+        self.rootCause = kwargs.pop('rootCause', {})
 
     def getSmallMessage(self):
         """
@@ -436,6 +441,9 @@ class RemotingMessage(AbstractMessage):
     """
     I am used to send RPC requests to a remote endpoint.
 
+    @ivar operation: Name of the remote method/operation that should be called.
+    @ivar source: Name of the service to be called including package name.
+        This property is provided for backwards compatibility.
     @see: U{RemotingMessage on Livedocs (external)
     <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/RemotingMessage.html>}
     """
@@ -443,13 +451,11 @@ class RemotingMessage(AbstractMessage):
     class __amf__:
         static = ('operation', 'source')
 
-    def __init__(self, *args, **kwargs):
-        AbstractMessage.__init__(self, *args, **kwargs)
-        #: Name of the remote method/operation that should be called.
-        self.operation = kwargs.get('operation', None)
-        #: Name of the service to be called including package name.
-        #: This property is provided for backwards compatibility.
-        self.source = kwargs.get('source', None)
+    def __init__(self, **kwargs):
+        AbstractMessage.__init__(self, **kwargs)
+
+        self.operation = kwargs.pop('operation', None)
+        self.source = kwargs.pop('source', None)
 
 
 class AcknowledgeMessageExt(AcknowledgeMessage):
