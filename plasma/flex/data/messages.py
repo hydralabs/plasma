@@ -31,14 +31,14 @@ class DataMessage(messages.AsyncMessage):
     the operation. This information is used to replicate updates and detect
     conflicts.
 
-    @see: U{DataMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>}
     @ivar identity: Provides access to the identity map which defines the
         unique identity of the item affected by this DataMessage (relevant for
         create/update/delete but not fill operations).
     @ivar operation: Provides access to the operation/command of this
         DataMessage. Operations indicate how the remote destination should
         process this message.
+    @see: U{DataMessage on Livedocs
+    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>}
     """
 
     def __init__(self, **kwargs):
@@ -52,44 +52,44 @@ class SequencedMessage(messages.AcknowledgeMessage):
     """
     Response to L{DataMessage} requests.
 
-    @see: U{SequencedMessage on Livedocs (external)
+    @ivar sequenceId: Unique identifier for a sequence within a remote
+        destination. This value is only unique for the endpoint and
+        destination contacted.
+    @ivar sequenceProxies: ???
+    @ivar sequenceSize: How many items reside in the remote sequence.
+
+    @see: U{SequencedMessage on Livedocs
     <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/SequencedMessage.html>}
     """
 
     def __init__(self, **kwargs):
         AcknowledgeMessage.__init__(self, **kwargs)
-        #: Provides access to the sequence id for this message.
-        #:
-        #: The sequence id is a unique identifier for a sequence
-        #: within a remote destination. This value is only unique for
-        #: the endpoint and destination contacted.
-        self.sequenceId = None
-        #:
-        self.sequenceProxies = None
-        #: Provides access to the sequence size for this message.
-        #:
-        #: The sequence size indicates how many items reside in the
-        #: remote sequence.
-        self.sequenceSize = None
-        #:
-        self.dataMessage = None
+
+        self.sequenceId = kwargs.pop('sequenceId', None)
+        self.sequenceProxies = kwargs.pop('sequenceProxies', None)
+        self.sequenceSize = kwargs.pop('sequenceSize', None)
+
+        # XXX: do we encode this?!
+        self.dataMessage = kwargs.pop('dataMessage', None)
 
 
 class PagedMessage(SequencedMessage):
     """
     This messsage provides information about a partial sequence result.
 
-    @see: U{PagedMessage on Livedocs (external)
+    @ivar pageCount: Provides access to the number of total pages in a
+        sequence based on the current page size.
+    @ivar pageIndex: Provides access to the index of the current page in a
+        sequence.
+    @see: U{PagedMessage on Livedocs
     <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/PagedMessage.html>}
     """
 
-    def __init__(self):
-        SequencedMessage.__init__(self)
-        #: Provides access to the number of total pages in a sequence
-        #: based on the current page size.
-        self.pageCount = None
-        #: Provides access to the index of the current page in a sequence.
-        self.pageIndex = None
+    def __init__(self, **kwargs):
+        SequencedMessage.__init__(self, **kwargs)
+
+        self.pageCount = kwargs.pop('pageCount', None)
+        self.pageIndex = kwargs.pop('pageIndex', None)
 
 
 class DataErrorMessage(messages.ErrorMessage):
@@ -98,22 +98,24 @@ class DataErrorMessage(messages.ErrorMessage):
     occurs.
 
     This message provides the conflict information in addition to
-    the L{ErrorMessage<pyamf.flex.messaging.ErrorMessage>} information.
+    the L{ErrorMessage<plasma.flex.messaging.ErrorMessage>} information.
 
-    @see: U{DataErrorMessage on Livedocs (external)
+    @ivar cause: The client originated message which caused the conflict.
+    @ivar propertyNames: A list of properties that were found to be
+        conflicting between the client and server objects.
+    @ivar serverObject: The value that the server had for the object with the
+        conflicting properties.
+
+    @see: U{DataErrorMessage on Livedocs
     <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataErrorMessage.html>}
     """
 
-    def __init__(self):
-        ErrorMessage.__init__(self)
-        #: The client oringinated message which caused the conflict.
-        self.cause = None
-        #: An array of properties that were found to be conflicting
-        #: between the client and server objects.
-        self.propertyNames = None
-        #: The value that the server had for the object with the
-        #: conflicting properties.
-        self.serverObject = None
+    def __init__(self, **kwargs):
+        ErrorMessage.__init__(self, **kwargs)
+
+        self.cause = kwargs.pop('cause', None)
+        self.propertyNames = kwargs.pop('propertyNames', None)
+        self.serverObject = kwargs.pop('serverObject', None)
 
 
 pyamf.register_package(globals(), package='flex.data.messages')

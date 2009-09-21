@@ -353,3 +353,9 @@ class SmallMessageTestCase(unittest.TestCase):
 
         self.assertTrue(isinstance(m, messages.AcknowledgeMessageExt))
         self.assertEquals(m.__dict__, k)
+
+
+class RegisteredClassesTest(unittest.TestCase):
+    """
+    Test to ensure that the correct classes have been registered in pyamf.
+    """
