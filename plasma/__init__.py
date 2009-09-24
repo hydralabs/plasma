@@ -18,5 +18,5 @@ __all__ = [
     '__version__'
 ]
 
-#: Plasma version number.
+#: Plasma version number..
 __version__ = (0, 0, 1)
