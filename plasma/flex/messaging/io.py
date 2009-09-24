@@ -3,7 +3,7 @@
 
 import pyamf
 
-__all__ = ['ArrayCollection', 'ObjectProxy']
+__all__ = ['ArrayCollection', 'ArrayList', 'ObjectProxy']
 
 
 class ArrayCollection(list):
@@ -36,25 +36,26 @@ class ArrayCollection(list):
     def __init__(self, source=None):
         if source is not None:
             if isinstance(source, dict):
-                raise TypeError('Cannot convert dicts to ArrayCollection')
+                raise TypeError('Cannot convert dicts to %s' % (self.__class__,))
 
             if hasattr(source, '__iter__'):
                 self.extend(source)
 
     def __repr__(self):
-        return "<flex.messaging.io.ArrayCollection %s>" % list.__repr__(self)
+        return "<flex.messaging.io.%s %s>" % (
+            self.__class__.__name__, list.__repr__(self))
 
     def __readamf__(self, input):
         data = input.readObject()
 
         if hasattr(data, 'source'):
             data = data.source
-        else:
-            if not hasattr(data, '__iter__'):
-                raise pyamf.DecodeError('Unable to read a list when decoding '
-                    'ArrayCollection')
 
-        self.extend(data)
+        try:
+            self.extend(data)
+        except TypeError:
+            raise pyamf.DecodeError('Unable to read a list '
+                'when decoding %s' % (self.__class__.__name__,))
 
     def __writeamf__(self, output):
         output.encoder.writeList(
@@ -194,6 +195,16 @@ class ArrayCollection(list):
         return self
 
 
+class ArrayList(ArrayCollection):
+    """
+    @see: http://livedocs.adobe.com/flex/gumbo/langref/mx/collections/ArrayList.html
+    """
+
+    class __amf__:
+        external = True
+        amf3 = True
+
+
 class ObjectProxy(object):
     """
     I represent the ActionScript 3 based class C{flex.messaging.io.ObjectProxy}
@@ -253,4 +264,3 @@ if pyamf.__version__ < (1, 0):
 
 
 pyamf.register_package(globals(), package='flex.messaging.io')
-
