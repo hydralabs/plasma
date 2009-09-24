@@ -20,7 +20,8 @@ __all__ = [
     'RemotingMessage',
     'CommandMessage',
     'AcknowledgeMessage',
-    'ErrorMessage'
+    'ErrorMessage',
+    'MessagePerformanceInfo'
 ]
 
 NAMESPACE = 'flex.messaging.messages'
@@ -456,6 +457,73 @@ class RemotingMessage(AbstractMessage):
 
         self.operation = kwargs.pop('operation', None)
         self.source = kwargs.pop('source', None)
+
+
+class MessagePerformanceInfo(object):
+    """
+    Used to capture various metrics about the sizing and timing of a message
+    sent from a client to the server and its  response message, as well as
+    pushed messages from the server to the client.
+
+    @ivar messageSize: Size of message in Bytes (message types depends on what
+        header this MPI is in).
+    @type messageSize: C{int}
+    @ivar sendTime: Millisecond timestamp of when this message was sent
+        (origin depends on on what header this MPI is in).
+    @type sendTime: C{int}
+    @ivar receiveType: Millisecond timestamp of when this message was received
+        (destination depends on on what header this MPI is in).
+    @type receiveType: C{int}
+    @ivar overheadTime: Amount of time in milliseconds that this message was
+        being processed on the server in order to calculate and populate MPI
+        metrics.
+    @type overheadTime: C{int}
+    @ivar infoType: "OUT" when this message originated on the server.
+    @type infoType: C{str}
+    @ivar pushedFlag: C{True} if this is info for a message that was pushed
+        from server to client.
+    @type pushedFlag: C{bool}
+    @ivar recordMessageSizes: C{True} when record-message-sizes is enabled for
+        the communication channel.
+    @type recordMessageSizes: C{bool}
+    @ivar recordMessageTimes: C{True} when record-message-times is enabled for
+        the communication channel.
+    @type recordMessageTimes: C{bool}
+    @ivar serverPrePushTime: Millisecond timestamp of when the server became
+        ready to push this message out.
+    @type serverPrePushTime: C{int}
+    @ivar serverPreAdapterTime: Millisecond timestamp of when the server
+        called into the adapter associated with the destination of this
+        message.
+    @type serverPreAdapterTime: C{int}
+    @ivar serverPostAdapterTime: Millisecond timestamp of when server
+        processing returned from the adapater associated  with the destination
+        of this message.
+    @type serverPostAdapterTime: C{int}
+    @ivar serverPreAdapterExternalTime: Millisecond timestamp of when the
+        adapter associated with the destination of this message made a call to
+        an external component.
+    @type serverPreAdapterExternalTime: C{int}
+    @ivar serverPostAdapterExternalTime: Millisecond timestamp of when
+        processing came back to the adapter associated with the destination of
+        this message from a call to an external component.
+    @type serverPostAdapterExternalTime: C{int}
+    """
+
+    def __init__(self, **kwargs):
+        self.messageSize = kwargs.pop('messageSize', None)
+        self.sendTime = kwargs.pop('sendTime', None)
+        self.receiveType = kwargs.pop('receiveType', None)
+        self.overheadTime = kwargs.pop('overheadTime', None)
+        self.infoType = kwargs.pop('infoType', None)
+        self.pushedFlag = kwargs.pop('pushedFlag', None)
+        self.recordMessageSizes = kwargs.pop('recordMessageSizes', None)
+        self.recordMessageTimes = kwargs.pop('recordMessageTimes', None)
+        self.serverPrePushTime = kwargs.pop('serverPrePushTime', None)
+        self.serverPreAdapterTime = kwargs.pop('serverPreAdapterTime', None)
+        self.serverPostAdapterTime = kwargs.pop('serverPostAdapterTime', None)
+        self.serverPreAdapterExternalTime = kwargs.pop('serverPreAdapterExternalTime', None)
+        self.serverPostAdapterExternalTime = kwargs.pop('serverPostAdapterExternalTime', None)
 
 
 class AcknowledgeMessageExt(AcknowledgeMessage):

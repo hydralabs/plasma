@@ -355,8 +355,70 @@ class SmallMessageTestCase(unittest.TestCase):
         self.assertEquals(m.__dict__, k)
 
 
-class RegisteredClassesTest(unittest.TestCase):
+class MessagePerformanceInfoTestCase(unittest.TestCase):
     """
-    Test to ensure that the correct classes have been registered in pyamf.
+    Tests for L{messages.MessagePerformanceInfo}
     """
 
+    alias = 'flex.messaging.messages.MessagePerformanceInfo'
+
+    def test_alias(self):
+        alias = pyamf.get_class_alias(self.alias)
+
+        self.assertIdentical(alias.klass, messages.MessagePerformanceInfo)
+
+    def test_create(self):
+        mpi = messages.MessagePerformanceInfo()
+
+        self.assertEquals(mpi.__dict__, {
+            'serverPrePushTime': None,
+            'serverPostAdapterExternalTime': None,
+            'infoType': None,
+            'pushedFlag': None,
+            'overheadTime': None,
+            'recordMessageSizes': None,
+            'serverPreAdapterTime': None,
+            'messageSize': None,
+            'recordMessageTimes': None,
+            'sendTime': None,
+            'serverPreAdapterExternalTime': None,
+            'serverPostAdapterTime': None,
+            'receiveType': None})
+
+    def test_kwargs(self):
+        kwargs = {
+            'serverPrePushTime': 'foo',
+            'serverPostAdapterExternalTime': 'bar',
+            'infoType': 'baz',
+            'pushedFlag': 'gak',
+            'overheadTime': 'spam',
+            'recordMessageSizes': 'eggs',
+            'serverPreAdapterTime': 'blarg',
+            'messageSize': 'woot',
+            'recordMessageTimes': 'oof',
+            'sendTime': 'rab',
+            'serverPreAdapterExternalTime': 'zab',
+            'serverPostAdapterTime': 'kag',
+            'receiveType': 'maps'
+        }
+
+        mpi = messages.MessagePerformanceInfo(**kwargs)
+        self.assertEquals(kwargs, mpi.__dict__)
+
+        n = kwargs.copy()
+        n.update({'foo': '123', 'bar': '456'})
+
+        mpi = messages.MessagePerformanceInfo(**n)
+        self.assertEquals(kwargs, mpi.__dict__)
+
+    def test_copy(self):
+        mpi = messages.MessagePerformanceInfo()
+
+        mpi.infoType = 'foo'
+
+        import copy
+
+        x = copy.copy(mpi)
+
+        self.assertTrue(isinstance(x, messages.MessagePerformanceInfo))
+        self.assertEquals(x.infoType, 'foo')
