@@ -359,3 +359,4 @@ class RegisteredClassesTest(unittest.TestCase):
     """
     Test to ensure that the correct classes have been registered in pyamf.
     """
+
