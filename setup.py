@@ -14,7 +14,7 @@ from setuptools.command import test
 
 def get_install_requirements():
     """
-    Returns a list of dependancies for Tape to function correctly on the
+    Returns a list of dependancies for Plasma to function correctly on the
     target platform.
     """
     install_requires = ['PyAMF>=0.5.1']
