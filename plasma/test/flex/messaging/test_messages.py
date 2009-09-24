@@ -355,8 +355,20 @@ class SmallMessageTestCase(unittest.TestCase):
         self.assertEquals(m.__dict__, k)
 
 
-class RegisteredClassesTest(unittest.TestCase):
+class HTTPMessageTestCase(unittest.TestCase):
     """
-    Test to ensure that the correct classes have been registered in pyamf.
+    Tests for L{messages.HTTPMessage}
     """
 
+    def test_create(self):
+        a = messages.HTTPMessage()
+
+        self.assertEquals(a.__dict__, {
+        })
+
+    def test_repr(self):
+        a = messages.HTTPMessage()
+
+        a.body = u'é,è'
+
+        repr(a)

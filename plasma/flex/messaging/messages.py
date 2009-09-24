@@ -458,6 +458,30 @@ class RemotingMessage(AbstractMessage):
         self.source = kwargs.pop('source', None)
 
 
+class HTTPMessage(AbstractMessage):
+    """
+    HTTP requests are sent to the HTTP endpoint using this message type.
+
+    @ivar contentType: Indicates the content type of this message.
+    @type contentType: C{str}
+    @ivar method: Indicates what method should be used for the request.
+    @type method: C{str}
+    @ivar url: Contains the final destination for this request.
+    @type url: C{str}
+    @ivar url: Contains the final destination for this request.
+    @type url: C{str}
+    """
+
+    def __init__(self, **kwargs):
+        AbstractMessage.__init__(self, **kwargs)
+
+        self.contentType = kwargs.pop('contentType', None)
+        self.httpHeaders = kwargs.pop('httpHeaders', {})
+        self.recordHeaders = kwargs.pop('recordHeaders', None)
+        self.method = kwargs.pop('method', None)
+        self.url = kwargs.pop('url', None)
+
+
 class AcknowledgeMessageExt(AcknowledgeMessage):
     """
     An L{AcknowledgeMessage}, but implementing C{ISmallMessage}.
