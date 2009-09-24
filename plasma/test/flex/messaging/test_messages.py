@@ -360,11 +360,58 @@ class HTTPMessageTestCase(unittest.TestCase):
     Tests for L{messages.HTTPMessage}
     """
 
+    alias = 'flex.messaging.messages.HTTPMessage'
+
+    def test_alias(self):
+        alias = pyamf.get_class_alias(self.alias)
+
+        self.assertIdentical(alias.klass, messages.HTTPMessage)
+
     def test_create(self):
         a = messages.HTTPMessage()
 
         self.assertEquals(a.__dict__, {
+            'body': None,
+            'contentType': None,
+            'url': None,
+            'timestamp': None,
+            'destination': None,
+            'clientId': None,
+            'method': None,
+            'headers': {},
+            'timeToLive': None,
+            'recordHeaders': None,
+            'messageId': None,
+            'httpHeaders': {}
         })
+
+    def test_kwargs(self):
+        kwargs = {
+            'body': 'foo',
+            'contentType': 'bar',
+            'url': 'baz',
+            'timestamp': 'gak',
+            'destination': 'spam',
+            'clientId': 'eggs',
+            'method': 'spam',
+            'headers': 'eggs',
+            'timeToLive': 'blarg',
+            'recordHeaders': 'xyz',
+            'messageId': 'oof',
+            'httpHeaders': 'rab'
+        }
+
+        h = messages.HTTPMessage(**kwargs)
+        self.assertEquals(h.__dict__, kwargs)
+
+        n = kwargs.copy()
+        n.update({
+            'foo': 'bar',
+            'baz': 'gak'
+        })
+
+        h = messages.HTTPMessage(**n)
+        self.assertEquals(h.__dict__, kwargs)
 
     def test_repr(self):
         a = messages.HTTPMessage()

@@ -20,7 +20,8 @@ __all__ = [
     'RemotingMessage',
     'CommandMessage',
     'AcknowledgeMessage',
-    'ErrorMessage'
+    'ErrorMessage',
+    'HTTPMessage'
 ]
 
 NAMESPACE = 'flex.messaging.messages'
