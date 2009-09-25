@@ -33,7 +33,8 @@ readme = os.path.join(os.path.dirname(__file__), 'README.txt')
 setup(
     name='plasma',
     version='0.0.1',
-    description='Blaze DS clone in Python',
+    description='Plasma is a Python implementation of Flex Messaging '\
+                'and Remoting',
     long_description=open(readme, 'rt').read(),
     url='http://plasmads.org',
     author='The Plasma Project',
@@ -43,7 +44,7 @@ setup(
     license='MIT',
     platforms=['any'],
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 2 - Pre-Alpha',
         'Natural Language :: English',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
