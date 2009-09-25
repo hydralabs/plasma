@@ -8,6 +8,8 @@ This module contains the message classes used with Flex Data Services.
 
 @see: U{RemoteObject on OSFlash (external)
 <http://osflash.org/documentation/amf3#remoteobject>}
+
+@since: 0.1
 """
 
 import uuid

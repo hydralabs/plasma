@@ -4,7 +4,9 @@
 # See LICENSE.txt for details.
 
 """
-Tests for L{plasma.flex.graphics}
+Tests for L{plasma.flex.graphics}.
+
+@since: 0.1
 """
 
 import unittest

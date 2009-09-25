@@ -5,6 +5,8 @@
 
 """
 Flex Messaging compatibility tests.
+
+@since: 0.1
 """
 
 import unittest

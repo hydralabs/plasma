@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2007-2009 The Plasma Project.
+# Copyright (c) 2009 The Plasma Project.
 # See LICENSE.txt for details.
 
 """
 Flex compatibility tests.
+
+@since: 0.1
 """
 
 import unittest
