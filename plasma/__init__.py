@@ -9,7 +9,7 @@ B{Plasma} rocks.
 @see: U{http://plasmads.org}
 
 @since: September 2009
-@version: 0.0.1
+@version: 0.1a
 @status: Planning
 """
 
@@ -18,5 +18,6 @@ __all__ = [
     '__version__'
 ]
 
-#: Plasma version number..
+
+#: Plasma version number.
 __version__ = (0, 1, 'alpha')
