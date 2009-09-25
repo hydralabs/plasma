@@ -2,7 +2,7 @@
 # See LICENSE.txt for details.
 
 """
-Support for flex.graphics packages.
+Support for C{flex.graphics} packages.
 """
 
 import pyamf
@@ -10,8 +10,8 @@ import pyamf
 
 class ImageSnapshot(object):
     """
-    This class corresponds to mx.graphics.ImageSnapshot on the client. Clients
-    may choose to capture images and send them to the server via a
+    This class corresponds to C{mx.graphics.ImageSnapshot} on the client.
+    Clients may choose to capture images and send them to the server via a
     RemoteObject call.
 
     @ivar contentType:  The content type for the image encoding format that
@@ -25,6 +25,8 @@ class ImageSnapshot(object):
     @type properties: C{dict}
     @ivar data: The encoded data representing the image snapshot.
     @type data: C{file} object
+    @see: U{ImageSnapshot on Livedocs (external)
+        <http://livedocs.adobe.com/flex/3/langref/mx/graphics/ImageSnapshot.html>}
     """
 
     def __init__(self, **kwargs):
