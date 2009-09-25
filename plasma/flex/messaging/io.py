@@ -197,7 +197,8 @@ class ArrayCollection(list):
 
 class ArrayList(ArrayCollection):
     """
-    @see: http://livedocs.adobe.com/flex/gumbo/langref/mx/collections/ArrayList.html
+    @see: U{ArrayList on LiveDocs (external)
+        <http://livedocs.adobe.com/flex/gumbo/langref/mx/collections/ArrayList.html>}
     """
 
     class __amf__:
