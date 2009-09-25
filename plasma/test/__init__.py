@@ -22,7 +22,7 @@ def failIfIdentical(self, first, second, msg=None):
     Fail the test if C{first} is C{second}.  This is an
     object-identity-equality test, not an object equality
     (i.e. C{__eq__}) test.
-    
+
     @param msg: if msg is None, then the failure message will be
         '%r is %r' % (first, second)
     """
