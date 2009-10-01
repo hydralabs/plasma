@@ -47,3 +47,17 @@ class ConstantTestCase(unittest.TestCase):
 
         self.assertTrue(x == 23)
         self.assertFalse(x != 23)
+
+    def test_str(self):
+        x = util.Constant('foo bar')
+        self.assertEquals(str(x), 'foo bar')
+
+        x = util.Constant(1234)
+        self.assertEquals(str(x), '1234')
+
+    def test_repr(self):
+        x = util.Constant('foo bar')
+        self.assertEquals(repr(x), "'foo bar'")
+
+        x = util.Constant(1234)
+        self.assertEquals(repr(x), '1234')
