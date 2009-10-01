@@ -2,7 +2,9 @@
 # See LICENSE.txt for details.
 
 """
-Support for flex.graphics packages.
+Support for C{flex.graphics} packages.
+
+@since: 0.1
 """
 
 import pyamf

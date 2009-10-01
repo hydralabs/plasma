@@ -12,6 +12,33 @@ from setuptools import setup, find_packages
 from setuptools.command import test
 
 
+def get_version():
+    """
+    Gets the version number. Pulls it from the source files rather than
+    duplicating it.
+    """
+    # we read the file instead of importing it as root sometimes does not
+    # have the cwd as part of the PYTHONPATH
+
+    fn = os.path.join(os.getcwd(), 'plasma', '__init__.py')
+    lines = open(fn, 'rt').readlines()
+
+    version = None
+
+    for l in lines:
+        # include the ' =' as __version__ is a part of __all__
+        if l.startswith('__version__ =', ):
+            x = compile(l, fn, 'single')
+            eval(x)
+            version = locals()['__version__']
+            break
+
+    if version is None:
+        raise RuntimeError('Couldn\'t determine version number')
+
+    return '.'.join([str(x) for x in version])
+
+
 def get_install_requirements():
     """
     Returns a list of dependancies for Plasma to function correctly on the
@@ -32,8 +59,9 @@ readme = os.path.join(os.path.dirname(__file__), 'README.txt')
 
 setup(
     name='plasma',
-    version='0.0.1',
-    description='Blaze DS clone in Python',
+    version=get_version(),
+    description='Plasma is a Python implementation of Flex Messaging '\
+                'and Remoting',
     long_description=open(readme, 'rt').read(),
     url='http://plasmads.org',
     author='The Plasma Project',
@@ -43,7 +71,7 @@ setup(
     license='MIT',
     platforms=['any'],
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 2 - Pre-Alpha',
         'Natural Language :: English',
         'Intended Audience :: Developers',
         'Intended Audience :: Information Technology',
