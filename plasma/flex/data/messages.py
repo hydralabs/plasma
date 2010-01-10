@@ -45,7 +45,7 @@ class DataMessage(messages.AsyncMessage):
     """
 
     def __init__(self, **kwargs):
-        AsyncMessage.__init__(self, **kwargs)
+        messages.AsyncMessage.__init__(self, **kwargs)
 
         self.identity = kwargs.pop('identity', None)
         self.operation = kwargs.pop('operation', None)
@@ -66,7 +66,7 @@ class SequencedMessage(messages.AcknowledgeMessage):
     """
 
     def __init__(self, **kwargs):
-        AcknowledgeMessage.__init__(self, **kwargs)
+        messages.AcknowledgeMessage.__init__(self, **kwargs)
 
         self.sequenceId = kwargs.pop('sequenceId', None)
         self.sequenceProxies = kwargs.pop('sequenceProxies', None)
@@ -114,7 +114,7 @@ class DataErrorMessage(messages.ErrorMessage):
     """
 
     def __init__(self, **kwargs):
-        ErrorMessage.__init__(self, **kwargs)
+        messages.ErrorMessage.__init__(self, **kwargs)
 
         self.cause = kwargs.pop('cause', None)
         self.propertyNames = kwargs.pop('propertyNames', None)
