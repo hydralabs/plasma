@@ -2,7 +2,8 @@
 # See LICENSE.txt for details.
 
 """
-Support for C{flex.data.messages}.
+Support for `flex.data.messages`.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """

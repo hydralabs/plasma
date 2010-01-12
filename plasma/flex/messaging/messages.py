@@ -6,10 +6,11 @@ Flex Messaging implementation.
 
 This module contains the message classes used with Flex Data Services.
 
-@see: U{RemoteObject on OSFlash (external)
-<http://osflash.org/documentation/amf3#remoteobject>}
+.. seealso:: `RemoteObject on OSFlash
+    <http://osflash.org/documentation/amf3#remoteobject>`_
 
-@since: 0.1
+.. versionadded: 0.1
+
 """
 
 import uuid
@@ -39,25 +40,26 @@ class AbstractMessage(object):
     message instance. The data property contains the instance specific data
     that needs to be delivered and processed by the decoder.
 
-    @see: U{AbstractMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AbstractMessage.html>}
+    .. seealso:: `AbstractMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AbstractMessage.html>`_
 
-    @ivar body: Specific data that needs to be delivered to the remote
+    :ivar body: Specific data that needs to be delivered to the remote
         destination.
-    @type body: C{mixed}
-    @ivar clientId: Indicates which client sent the message.
-    @type clientId: C{str}
-    @ivar destination: Message destination.
-    @type destination: C{str}
-    @ivar headers: Message headers. Core header names start with DS.
-    @type headers: C{dict}
-    @ivar messageId: Unique Message ID.
-    @type messageId: C{str}
-    @ivar timeToLive: How long the message should be considered valid and
+    :type body: `mixed`
+    :ivar clientId: Indicates which client sent the message.
+    :type clientId: `str`
+    :ivar destination: Message destination.
+    :type destination: `str`
+    :ivar headers: Message headers. Core header names start with DS.
+    :type headers: `dict`
+    :ivar messageId: Unique Message ID.
+    :type messageId: `str`
+    :ivar timeToLive: How long the message should be considered valid and
         deliverable.
-    @type timeToLive: C{int}
-    @ivar timestamp: Timestamp when the message was generated.
-    @type timestamp: C{int}
+    :type timeToLive: `int`
+    :ivar timestamp: Timestamp when the message was generated.
+    :type timestamp: `int`
+
     """
 
     class __amf__:
@@ -111,8 +113,6 @@ class AbstractMessage(object):
         return m + " />"
 
     def decodeSmallAttribute(self, attr, input):
-        """
-        """
         obj = input.readObject()
 
         if attr in ['timestamp', 'timeToLive']:
@@ -121,8 +121,6 @@ class AbstractMessage(object):
         return obj
 
     def encodeSmallAttribute(self, attr):
-        """
-        """
         obj = getattr(self, attr)
 
         if not obj:
@@ -192,8 +190,9 @@ class AbstractMessage(object):
 
     def getSmallMessage(self):
         """
-        Return a ISmallMessage representation of this object. If one is not
-        available, L{NotImplementedError} will be raised.
+        Return an `ISmallMessage` representation of this object. If one is not
+        available, `NotImplementedError` will be raised.
+
         """
         raise NotImplementedError
 
@@ -202,11 +201,12 @@ class AsyncMessage(AbstractMessage):
     """
     I am the base class for all asynchronous Flex messages.
 
-    @see: U{AsyncMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AsyncMessage.html>}
+    .. seealso:: `AsyncMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AsyncMessage.html>`_
 
-    @ivar correlationId: Correlation id of the message.
-    @type correlationId: C{str}
+    :ivar correlationId: Correlation id of the message.
+    :type correlationId: `str`
+
     """
 
     #: Messages that were sent with a defined subtopic property indicate their
@@ -250,9 +250,7 @@ class AsyncMessage(AbstractMessage):
             output.writeObject(pyamf.amf3.ByteArray(self.correlationId.bytes))
 
     def getSmallMessage(self):
-        """
-        Return a ISmallMessage representation of this async message.
-        """
+        """Return an `ISmallMessage` representation of this async message."""
         return AsyncMessageExt(**self.__dict__)
 
 
@@ -263,8 +261,9 @@ class AcknowledgeMessage(AsyncMessage):
     Every message sent within the messaging system must receive an
     acknowledgement.
 
-    @see: U{AcknowledgeMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AcknowledgeMessage.html>}
+    .. seealso:: `AcknowledgeMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/AcknowledgeMessage.html>`_
+
     """
 
     #: Used to indicate that the acknowledgement is for a message that
@@ -288,7 +287,8 @@ class AcknowledgeMessage(AsyncMessage):
 
     def getSmallMessage(self):
         """
-        Return a ISmallMessage representation of this acknowledge message.
+        Return an ISmallMessage representation of this acknowledge message.
+
         """
         return AcknowledgeMessageExt(**self.__dict__)
 
@@ -298,15 +298,17 @@ class CommandMessage(AsyncMessage):
     Provides a mechanism for sending commands related to publish/subscribe
     messaging, ping, and cluster operations.
 
-    @see: U{CommandMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/CommandMessage.html>}
+    .. seealso:: `CommandMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/CommandMessage.html>`_
+        
 
-    @ivar operation: The command
-    @type operation: C{str}
-    @ivar messageRefType: Remote destination belonging to a specific service,
+    :ivar operation: The command
+    :type operation: `str`
+    :ivar messageRefType: Remote destination belonging to a specific service,
         based upon whether this message type matches the message type the
         service handles.
-    @type messageRefType: C{str}
+    :type messageRefType: `str`
+
     """
 
     #: The server message type for authentication commands.
@@ -384,9 +386,7 @@ class CommandMessage(AsyncMessage):
             output.writeUnsignedByte(0)
 
     def getSmallMessage(self):
-        """
-        Return an ISmallMessage representation of this command message.
-        """
+        """Return an ISmallMessage representation of this command message."""
         return CommandMessageExt(**self.__dict__)
 
 
@@ -396,18 +396,19 @@ class ErrorMessage(AcknowledgeMessage):
 
     This class is used to report errors within the messaging system.
 
-    @ivar extendedData: Extended data that the remote destination has chosen
+    :ivar extendedData: Extended data that the remote destination has chosen
         to associate with this error to facilitate custom error processing on
         the client.
-    @ivar faultCode: Fault code for the error.
-    @type faultCode: C{str}
-    @ivar faultDetail: Detailed description of what caused the error.
-    @ivar faultString: A simple description of the error.
-    @ivar rootCause: Should a traceback exist for the error, this property
+    :ivar faultCode: Fault code for the error.
+    :type faultCode: `str`
+    :ivar faultDetail: Detailed description of what caused the error.
+    :ivar faultString: A simple description of the error.
+    :ivar rootCause: Should a traceback exist for the error, this property
         contains the message.
 
-    @see: U{ErrorMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/ErrorMessage.html>}
+    .. seealso:: `ErrorMessage on Livedocs
+        http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/ErrorMessage.html`_
+
     """
 
     #: If a message may not have been delivered, the faultCode will contain
@@ -433,9 +434,7 @@ class ErrorMessage(AcknowledgeMessage):
         self.rootCause = kwargs.pop('rootCause', {})
 
     def getSmallMessage(self):
-        """
-        Return a ISmallMessage representation of this error message.
-        """
+        """Return a ISmallMessage representation of this error message."""
         raise NotImplementedError
 
 
@@ -443,11 +442,13 @@ class RemotingMessage(AbstractMessage):
     """
     I am used to send RPC requests to a remote endpoint.
 
-    @ivar operation: Name of the remote method/operation that should be called.
-    @ivar source: Name of the service to be called including package name.
+    :ivar operation: Name of the remote method/operation that should be called.
+    :ivar source: Name of the service to be called including package name.
         This property is provided for backwards compatibility.
-    @see: U{RemotingMessage on Livedocs (external)
-    <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/RemotingMessage.html>}
+
+    .. seealso:: `RemotingMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/messaging/messages/RemotingMessage.html>`_
+
     """
 
     class __amf__:
@@ -461,35 +462,27 @@ class RemotingMessage(AbstractMessage):
 
 
 class AcknowledgeMessageExt(AcknowledgeMessage):
-    """
-    An L{AcknowledgeMessage}, but implementing C{ISmallMessage}.
-    """
+    """An :class:`AcknowledgeMessage`, but implementing `ISmallMessage`."""
 
     class __amf__:
         external = True
 
 
 class CommandMessageExt(CommandMessage):
-    """
-    A L{CommandMessage}, but implementing C{ISmallMessage}.
-    """
+    """A :class:`CommandMessage`, but implementing `ISmallMessage`."""
 
     class __amf__:
         external = True
 
 
 class AsyncMessageExt(AsyncMessage):
-    """
-    A L{AsyncMessage}, but implementing C{ISmallMessage}.
-    """
+    """An :class:`AsyncMessage`, but implementing `ISmallMessage`."""
 
     class __amf__:
         external = True
 
 
 def read_flags(input):
-    """
-    """
     flags = []
 
     done = False
@@ -508,9 +501,7 @@ def read_flags(input):
 
 
 def decode_uuid(obj):
-    """
-    Decode a L{ByteArray} contents to a C{uuid.UUID} instance.
-    """
+    """Decode `ByteArray` contents to a :class:`uuid.UUID` instance."""
     return uuid.UUID(bytes=str(obj))
 
 

@@ -4,7 +4,8 @@
 """
 Tests for Plasma.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """
 
 

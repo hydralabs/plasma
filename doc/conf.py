@@ -17,6 +17,10 @@ sys.path.append(os.path.abspath('html'))
 # General configuration
 # ---------------------
 
+# Add any Sphinx extension module names here, as strings. They can be extensions
+# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+extensions = ['sphinx.ext.autodoc']
+
 # Paths that contain templates, relative to this directory.
 templates_path = ['html']
 
@@ -44,8 +48,8 @@ copyright = "Copyright &#169; %s The <a href='%s'>%s</a> Project. All rights res
 
 # We look for the __init__.py file in the current Plasma source tree
 # and replace the values accordingly.
-release = '.'.join(map(lambda x: str(x), plasma.__version__))
-version = release[:3]
+from plasma.version import version
+release = version
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

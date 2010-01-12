@@ -6,7 +6,8 @@
 """
 Flex Messaging compatibility tests.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """
 
 import unittest
@@ -19,9 +20,7 @@ from plasma.flex.messaging import messages
 
 
 class AbstractMessageTestCase(unittest.TestCase):
-    """
-    Tests for L{messages.AbstractMessage}
-    """
+    """Tests for :class:`messages.AbstractMessage`"""
 
     def test_create(self):
         a = messages.AbstractMessage()
@@ -62,6 +61,7 @@ class AbstractMessageTestCase(unittest.TestCase):
         """
         Test to check that if more than 2 flags are received in __readamf__
         an error will be thrown.
+
         """
         class Mock:
             b = [0x80, 0x80, 0x02]
@@ -81,14 +81,13 @@ class AbstractMessageTestCase(unittest.TestCase):
 
 
 class AsyncMessageTestCase(unittest.TestCase):
-    """
-    Tests for L{messages.AsyncMessage}
-    """
+    """Tests for :class:`messages.AsyncMessage`"""
 
     def test_too_many_flags(self):
         """
         Test to check that if more than 2 flags are received in __readamf__
         an error will be thrown.
+
         """
         class Mock:
             b = [0x80, 0x00, 0x80, 0x00]
@@ -108,14 +107,13 @@ class AsyncMessageTestCase(unittest.TestCase):
 
 
 class AcknowledgeMessageTestCase(unittest.TestCase):
-    """
-    Tests for L{messages.AcknowledgeMessage}
-    """
+    """Tests for :class:`messages.AcknowledgeMessage`"""
 
     def test_too_many_flags(self):
         """
         Test to check that if more than 2 flags are received in __readamf__
         an error will be thrown.
+
         """
         class Mock:
             b = [0x80, 0x00, 0x00, 0x80, 0x00]
@@ -135,14 +133,13 @@ class AcknowledgeMessageTestCase(unittest.TestCase):
 
 
 class CommandMessageTestCase(unittest.TestCase):
-    """
-    Tests for L{messages.CommandMessage}
-    """
+    """Tests for :class:`messages.CommandMessage`"""
 
     def test_too_many_flags(self):
         """
         Test to check that if more than 2 flags are received in __readamf__
         an error will be thrown.
+
         """
         class Mock:
             b = [0x80, 0x00, 0x00, 0x80, 0x00]
@@ -163,7 +160,8 @@ class CommandMessageTestCase(unittest.TestCase):
     def test_flags_no_operation(self):
         """
         Test to ensure that 0 is written for the command flag when operation
-        is C{None}
+        is `None`.
+
         """
         class MockDataOutput:
             written = []
@@ -185,9 +183,7 @@ class CommandMessageTestCase(unittest.TestCase):
 
 
 class EncodingTestCase(unittest.TestCase):
-    """
-    Encoding tests for L{messages}
-    """
+    """Encoding tests for :mod:`messages`"""
 
     def test_AcknowledgeMessage(self):
         m = messages.AcknowledgeMessage()
@@ -230,9 +226,7 @@ class EncodingTestCase(unittest.TestCase):
 
 
 class SmallMessageTestCase(unittest.TestCase):
-    """
-    Tests for L{messages.SmallMessageMixIn}
-    """
+    """Tests for :class:`messages.SmallMessageMixIn`"""
 
     def setUp(self):
         self.decoder = pyamf.get_decoder(pyamf.AMF3)
@@ -305,9 +299,8 @@ class SmallMessageTestCase(unittest.TestCase):
         self.assertEquals(buffer, bytes)
 
     def test_getmessage(self):
-        """
-        Tests for `getSmallMessage`
-        """
+        """Tests for `getSmallMessage`"""
+
         for cls in ['AbstractMessage', 'ErrorMessage', 'RemotingMessage']:
             cls = getattr(messages, cls)
             self.assertRaises(NotImplementedError, cls().getSmallMessage)
@@ -360,5 +353,6 @@ class SmallMessageTestCase(unittest.TestCase):
 class RegisteredClassesTest(unittest.TestCase):
     """
     Test to ensure that the correct classes have been registered in pyamf.
+
     """
 

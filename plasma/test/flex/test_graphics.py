@@ -4,9 +4,10 @@
 # See LICENSE.txt for details.
 
 """
-Tests for L{plasma.flex.graphics}.
+Tests for :mod:`plasma.flex.graphics`.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """
 
 import unittest
@@ -17,9 +18,7 @@ from plasma.flex import graphics
 
 
 class ImageSnapshotTestCase(unittest.TestCase):
-    """
-    Tests for L{graphics.ImageSnapshot}
-    """
+    """Tests for :class:`graphics.ImageSnapshot`"""
 
     alias = 'flex.graphics.ImageSnapshot'
 

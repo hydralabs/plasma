@@ -6,7 +6,8 @@
 """
 Flex compatibility tests.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """
 
 import unittest
@@ -17,9 +18,7 @@ from pyamf import amf0, amf3
 
 
 class ArrayCollectionTestCase(unittest.TestCase):
-    """
-    Tests for L{io.ArrayCollection}
-    """
+    """Tests for :class:`io.ArrayCollection`"""
 
     def test_create(self):
         self.assertEquals(io.ArrayCollection(), [])
@@ -90,6 +89,7 @@ class ArrayCollectionTestCase(unittest.TestCase):
         """
         Test to ensure an error is thrown if an object that cannot be iterated
         over is read from the stream.
+
         """
         class MockDataInput:
             def readObject(self):
@@ -99,9 +99,7 @@ class ArrayCollectionTestCase(unittest.TestCase):
         self.assertRaises(pyamf.DecodeError, a.__readamf__, MockDataInput())
 
     def test_readonly_length(self):
-        """
-        Trying to set the length should cause an error
-        """
+        """Trying to set the length should cause an error."""
         a = io.ArrayCollection()
 
         self.assertRaises(AttributeError, setattr, a, 'length', 2)
@@ -192,9 +190,7 @@ class ArrayCollectionAPITestCase(unittest.TestCase):
 
 
 class ObjectProxyTestCase(unittest.TestCase):
-    """
-    Tests for L{io.ObjectProxy}
-    """
+    """Tests for :class:`io.ObjectProxy`"""
 
     def test_encode(self):
         x = io.ObjectProxy(dict(a='spam', b=5))
@@ -236,9 +232,7 @@ class ObjectProxyTestCase(unittest.TestCase):
 
 
 class ArrayListTestCase(unittest.TestCase):
-    """
-    Tests for L{io.ArrayList}
-    """
+    """Tests for :class:`io.ArrayList`"""
 
     def test_create(self):
         self.assertEquals(io.ArrayList(), [])
@@ -309,6 +303,7 @@ class ArrayListTestCase(unittest.TestCase):
         """
         Test to ensure an error is thrown if an object that cannot be iterated
         over is read from the stream.
+
         """
         class MockDataInput:
             def readObject(self):
@@ -318,18 +313,14 @@ class ArrayListTestCase(unittest.TestCase):
         self.assertRaises(pyamf.DecodeError, a.__readamf__, MockDataInput())
 
     def test_readonly_length(self):
-        """
-        Trying to set the length should cause an error
-        """
+        """Trying to set the length should cause an error."""
         a = io.ArrayList()
 
         self.assertRaises(AttributeError, setattr, a, 'length', 2)
 
 
 class UnproxyTestCase(unittest.TestCase):
-    """
-    Tests for L{io.unproxy_object}
-    """
+    """Tests for :class:`io.unproxy_object`"""
 
     def test_objectproxy(self):
         x = {'foo': 'foo', 'bar': 'bar'}

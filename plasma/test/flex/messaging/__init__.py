@@ -2,5 +2,6 @@
 # See LICENSE.txt for details.
 
 """
-@since: 0.1
+.. versionadded:: 0.1
+
 """

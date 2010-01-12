@@ -2,7 +2,8 @@
 # See LICENSE.txt for details.
 
 """
-Support for C{flex.messaging} namespace.
+Support for `flex.messaging` namespace.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """

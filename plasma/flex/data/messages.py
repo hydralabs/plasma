@@ -7,7 +7,8 @@ Flex Data Management Service implementation.
 This module contains the message classes used with Flex Data Management
 Service.
 
-@since: 0.1
+.. versionadded:: 0.1
+
 """
 
 
@@ -25,8 +26,8 @@ __all__ = [
 
 class DataMessage(messages.AsyncMessage):
     """
-    I am used to transport an operation that occured on a managed object
-    or collection.
+    This message is used to transport an operation that occured on a managed
+    object or collection.
 
     This class of message is transmitted between clients subscribed to a
     remote destination as well as between server nodes within a cluster.
@@ -34,14 +35,16 @@ class DataMessage(messages.AsyncMessage):
     the operation. This information is used to replicate updates and detect
     conflicts.
 
-    @ivar identity: Provides access to the identity map which defines the
-        unique identity of the item affected by this DataMessage (relevant for
-        create/update/delete but not fill operations).
-    @ivar operation: Provides access to the operation/command of this
-        DataMessage. Operations indicate how the remote destination should
+    :ivar identity: Provides access to the identity map which defines the
+        unique identity of the item affected by this `DataMessage`
+        (relevant for create/update/delete but not fill operations).
+    :ivar operation: Provides access to the operation/command of this
+        `DataMessage`. Operations indicate how the remote destination should
         process this message.
-    @see: U{DataMessage on Livedocs
-    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>}
+    
+    .. seealso:: `DataMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>`_
+
     """
 
     def __init__(self, **kwargs):
@@ -53,16 +56,17 @@ class DataMessage(messages.AsyncMessage):
 
 class SequencedMessage(messages.AcknowledgeMessage):
     """
-    Response to L{DataMessage} requests.
+    Response to :class:`DataMessage` requests.
 
-    @ivar sequenceId: Unique identifier for a sequence within a remote
+    :ivar sequenceId: Unique identifier for a sequence within a remote
         destination. This value is only unique for the endpoint and
         destination contacted.
-    @ivar sequenceProxies: ???
-    @ivar sequenceSize: How many items reside in the remote sequence.
+    :ivar sequenceProxies: ???
+    :ivar sequenceSize: How many items reside in the remote sequence.
 
-    @see: U{SequencedMessage on Livedocs
-    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/SequencedMessage.html>}
+    .. seealso:: `SequencedMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/SequencedMessage.html>`_
+
     """
 
     def __init__(self, **kwargs):
@@ -78,14 +82,16 @@ class SequencedMessage(messages.AcknowledgeMessage):
 
 class PagedMessage(SequencedMessage):
     """
-    This messsage provides information about a partial sequence result.
+    This message provides information about a partial sequence result.
 
-    @ivar pageCount: Provides access to the number of total pages in a
+    :ivar pageCount: Provides access to the number of total pages in a
         sequence based on the current page size.
-    @ivar pageIndex: Provides access to the index of the current page in a
+    :ivar pageIndex: Provides access to the index of the current page in a
         sequence.
-    @see: U{PagedMessage on Livedocs
-    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/PagedMessage.html>}
+
+    .. seealso:: `PagedMessage on Livedocs
+        <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/PagedMessage.html>`_
+
     """
 
     def __init__(self, **kwargs):
@@ -101,16 +107,17 @@ class DataErrorMessage(messages.ErrorMessage):
     occurs.
 
     This message provides the conflict information in addition to
-    the L{ErrorMessage<plasma.flex.messaging.ErrorMessage>} information.
+    the :class:`~plasma.flex.messaging.ErrorMessage` information.
 
-    @ivar cause: The client originated message which caused the conflict.
-    @ivar propertyNames: A list of properties that were found to be
+    :ivar cause: The client originated message which caused the conflict.
+    :ivar propertyNames: A list of properties that were found to be
         conflicting between the client and server objects.
-    @ivar serverObject: The value that the server had for the object with the
+    :ivar serverObject: The value that the server had for the object with the
         conflicting properties.
 
-    @see: U{DataErrorMessage on Livedocs
-    <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataErrorMessage.html>}
+    .. seealso:: `DataErrorMessage on Livedocs
+        http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataErrorMessage.html>`_
+
     """
 
     def __init__(self, **kwargs):
