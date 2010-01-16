@@ -327,11 +327,11 @@ class HTTPRemotingService(RemotingServiceBase):
 
     def addHTTPHeader(self, name, value):
         """Adds a header to the underlying HTTP connection."""
-        self.client_factory.headers[name] = value
+        self.http_headers[name] = value
 
     def removeHTTPHeader(self, name):
         """Deletes an HTTP header."""
-        del self.client_factory.headers[name]
+        del self.http_headers[name]
 
     def execute(self):
         if self.logger:
