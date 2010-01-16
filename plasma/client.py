@@ -10,6 +10,7 @@ from twisted.internet import reactor
 from twisted.web import http
 from twisted.internet.defer import Deferred
 from pyamf import remoting
+from nose.tools import set_trace
 import pyamf
 
 from plasma.version import version
@@ -288,11 +289,9 @@ class RemotingServiceBase(object):
             elif response.status == remoting.STATUS_ERROR:
                 request.deferred.errback(response.body)
 
-#    def _handleAMFError(self, failure, requests):
-    def _handleAMFError(self, failure):
-        print "Failure: %s" % failure
-#        for request in requests:
-#            request.deferred.errback(failure)
+    def _handleAMFError(self, failure, requests):
+        for request in requests:
+            request.deferred.errback(failure)
         raise failure
 
     def execute(self):
@@ -353,7 +352,7 @@ class HTTPRemotingService(RemotingServiceBase):
         factory.deferred.addCallback(remoting.decode, strict=self.strict)
         factory.deferred.addCallbacks(self._handleAMFResponse,
                                       self._handleAMFError,
-                                      callbackArgs=[requests],
+                                      [requests],
                                       errbackArgs=[requests])
         reactor.connectTCP(self.url.hostname, port, factory)
 
@@ -404,4 +403,4 @@ class HTTPRemotingService(RemotingServiceBase):
         elif remoting.REPLACE_GATEWAY_URL in response.headers:
             new_url = response.headers[remoting.REPLACE_GATEWAY_URL]
             self.url = urlparse(new_url)
-        RemotingServiceBase._handleAMFResponse(self, response)
+        RemotingServiceBase._handleAMFResponse(self, response, requests)
