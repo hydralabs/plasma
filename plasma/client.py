@@ -353,7 +353,8 @@ class HTTPRemotingService(RemotingServiceBase):
         factory.deferred.addCallback(remoting.decode, strict=self.strict)
         factory.deferred.addCallbacks(self._handleAMFResponse,
                                       self._handleAMFError,
-                                      [requests], [requests])
+                                      callbackArgs=[requests],
+                                      errbackArgs=[requests])
         reactor.connectTCP(self.url.hostname, port, factory)
 
     @staticmethod
