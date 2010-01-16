@@ -95,7 +95,7 @@ class TestRemotingService():
         eq_(service.url.hostname, 'example.org')
         eq_(service.url.port, 8080)
 
-    @deferred()
+    @deferred(2)
     @inlineCallbacks
     def test_single_request(self):
         x = client.HTTPRemotingService('http://127.0.0.1:11111')

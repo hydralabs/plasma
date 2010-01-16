@@ -356,6 +356,11 @@ class HTTPRemotingService(RemotingServiceBase):
                                       [requests], [requests])
         reactor.connectTCP(self.url.hostname, port, factory)
 
+    @staticmethod
+    def _getHTTPHeader(http_headers, key):
+        if key in http_headers:
+            return http_headers[key][0]
+
     def _handleHTTPResponse(self, response_body, factory):
         """
         Handles the HTTP response from the remote gateway.
@@ -371,22 +376,22 @@ class HTTPRemotingService(RemotingServiceBase):
             if self.logger:
                 self.logger.debug('Got response status: %s', factory.status)
                 self.logger.debug('Body: %s', response_body)
-            raise remoting.RemotingError("HTTP Gateway reported status %d %s" %
+            raise remoting.RemotingError('HTTP Gateway reported status %d %s' %
                                          (factory.status, factory.message))
 
         # Check content type
-        content_type = response_headers.get('content-type')
+        content_type = self._getHTTPHeader(response_headers, 'content-type')
         if content_type != remoting.CONTENT_TYPE:
             if self.logger:
-                self.logger.debug('Content-Type: %s',
-                                  response_headers.get('content-type'))
+                self.logger.debug('Content-Type: %s', content_type)
             raise remoting.RemotingError(
-                "Incorrect MIME type received. (got: %s)" % content_type)
+                'Incorrect MIME type received. (got: %s)' % content_type)
 
         if self.logger:
             self.logger.debug('Content-Length: %s',
-                              response_headers.get('content-length'))
-            self.logger.debug('Server: %s', response_headers.get('server'))
+                self._getHTTPHeader(response_headers, 'content-length'))
+            self.logger.debug('Server: %s',
+                self._getHTTPHeader(response_headers, 'server'))
             self.logger.debug('Read %d bytes for the response',
                               len(response_body))
         return response_body
