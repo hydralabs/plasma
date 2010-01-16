@@ -365,30 +365,28 @@ class HTTPRemotingService(RemotingServiceBase):
 
         """
         response_headers = factory.response_headers
-        if self.logger:
-            self.logger.debug('Got response status: %s', factory.status)
-            self.logger.debug('Content-Type: %s',
-                              response_headers.get('Content-Type'))
 
         # Make sure we got a response with a 200 status
-        if factory.status != http.OK:
+        if int(factory.status) != http.OK:
             if self.logger:
+                self.logger.debug('Got response status: %s', factory.status)
                 self.logger.debug('Body: %s', response_body)
             raise remoting.RemotingError("HTTP Gateway reported status %d %s" %
                                          (factory.status, factory.message))
 
         # Check content type
-        content_type = response_headers.get('Content-Type')
+        content_type = response_headers.get('content-type')
         if content_type != remoting.CONTENT_TYPE:
             if self.logger:
-                self.logger.debug('Body = %s', response_body)
+                self.logger.debug('Content-Type: %s',
+                                  response_headers.get('content-type'))
             raise remoting.RemotingError(
                 "Incorrect MIME type received. (got: %s)" % content_type)
 
         if self.logger:
             self.logger.debug('Content-Length: %s',
-                              response_headers.get('Content-Length'))
-            self.logger.debug('Server: %s', response_headers.get('Server'))
+                              response_headers.get('content-length'))
+            self.logger.debug('Server: %s', response_headers.get('server'))
             self.logger.debug('Read %d bytes for the response',
                               len(response_body))
         return response_body
