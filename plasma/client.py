@@ -349,7 +349,7 @@ class HTTPRemotingService(RemotingServiceBase):
                                    strict=self.strict))
         factory = HTTPClientFactory(self.url.geturl(), 'POST', body,
                                     self.http_headers, self.user_agent)
-        factory.deferred.addCallback(self._handleHTTPResponse, [factory])
+        factory.deferred.addCallback(self._handleHTTPResponse, factory)
         factory.deferred.addCallback(remoting.decode, strict=self.strict)
         factory.deferred.addCallbacks(self._handleAMFResponse,
                                       self._handleAMFError,
@@ -364,7 +364,6 @@ class HTTPRemotingService(RemotingServiceBase):
         :raise RemotingError: Incorrect MIME type received
 
         """
-        print "has headers: %s" % hasattr(factory, 'response_headers')
         response_headers = factory.response_headers
         if self.logger:
             self.logger.debug('Got response status: %s', factory.status)

@@ -96,21 +96,19 @@ class TestRemotingService():
         eq_(service.url.port, 8080)
 
     @deferred()
-#    @inlineCallbacks
+    @inlineCallbacks
     def test_single_request(self):
         x = client.HTTPRemotingService('http://127.0.0.1:11111')
         y = x.getService('uppercase')
 
         assert isinstance(y, client.ServiceProxy)
-        assert hasattr(y, '_call__')
+        assert hasattr(y, '__call__')
         eq_(y._name, 'uppercase')
         
-        set_trace()
         deferred = y('teststring')
         assert isinstance(deferred, Deferred)
-        return deferred
-#        result = yield deferred
-#        eq_(result, 'TESTSTRING')
+        result = yield deferred
+        eq_(result, 'TESTSTRING')
 
 #    def test_add_request(self):
 #        gw = client.HTTPRemotingService('http://spameggs.net')
