@@ -19,13 +19,6 @@ import pyamf
 from plasma.version import version
 
 
-def convert_args(args):
-    if args == (tuple(),):
-        return []
-    else:
-        return [x for x in args]
-
-
 class ServiceMethodProxy(object):
     """
     Serves as a proxy for calling a service method.
