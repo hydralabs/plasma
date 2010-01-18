@@ -4,7 +4,6 @@
 """
 Remoting client implementation.
 
-.. versionadded:: 0.1
 """
 
 from urlparse import urlparse
@@ -45,7 +44,10 @@ class ServiceMethodProxy(object):
         self.name = name
 
     def __call__(self, *args):
-        """Inform the proxied service that this function has been called."""
+        """
+        Inform the proxied service that this function has been called.
+        
+        """
         return self.service._call(self, *args)
 
     def __str__(self):
@@ -102,11 +104,17 @@ class ServiceProxy(object):
         return d
 
     def __call__(self, *args):
-        """This allows services to be 'called' without a method name."""
+        """
+        This allows services to be 'called' without a method name.
+        
+        """
         return self._call(ServiceMethodProxy(self, None), *args)
 
     def __str__(self):
-        """Returns a string representation of the name of the service."""
+        """
+        Returns a string representation of the name of the service.
+        
+        """
         return self._name
 
 
@@ -319,6 +327,13 @@ class RemotingServiceBase(object):
 
 
 class HTTPRemotingService(RemotingServiceBase):
+    """
+    Remoting service using standard HTTP/1.0 requests. Sends one request, or
+    a batch of requests to the remote server, and invokes all the callbacks
+    when it receives a reply.
+
+    """
+
     BASE_HTTP_HEADERS = {'Content-Type': remoting.CONTENT_TYPE}
 
     user_agent = 'Plasma/%s' % version
@@ -332,11 +347,17 @@ class HTTPRemotingService(RemotingServiceBase):
             self.user_agent = user_agent
 
     def addHTTPHeader(self, name, value):
-        """Adds a header to the underlying HTTP connection."""
+        """
+        Adds a header to the underlying HTTP connection.
+        
+        """
         self.http_headers[name] = value
 
     def removeHTTPHeader(self, name):
-        """Deletes an HTTP header."""
+        """
+        Deletes an HTTP header.
+        
+        """
         del self.http_headers[name]
 
     def execute(self):
