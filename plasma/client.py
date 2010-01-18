@@ -1,7 +1,11 @@
 # Copyright (c) The Plasma Project.
 # See LICENSE.txt for details.
 
-"""Remoting client implementation."""
+"""
+Remoting client implementation.
+
+.. versionadded:: 0.1
+"""
 
 from urlparse import urlparse
 
@@ -141,7 +145,7 @@ class RemotingServiceBase(object):
     :ivar request_number: A unique identifier for tracking the number of
         requests.
     :ivar amf_version: The AMF version to use.
-        See L{ENCODING_TYPES<pyamf.ENCODING_TYPES>}.
+        See :data:`ENCODING_TYPES <pyamf.ENCODING_TYPES>`.
     :type amf_version: `int`
     :ivar referer: The referer, or HTTP referer, identifies the address of the
         client. Ignored by default.
