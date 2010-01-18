@@ -8,7 +8,7 @@ from pyamf.remoting.gateway import authenticate
 
 import logging
 
-from nose.tools import eq_, raises, set_trace
+from nose.tools import eq_, raises
 from nose.twistedtools import reactor, deferred
 from twisted.web.server import Site
 from twisted.internet.defer import Deferred, inlineCallbacks
