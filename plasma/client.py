@@ -145,9 +145,6 @@ class RemotingServiceBase(object):
     """
     Acts as a client for AMF calls.
 
-    :ivar url: The url of the remote gateway. Accepts `http` or `https`
-        as valid schemes.
-    :type url: `str`
     :ivar requests: The list of pending requests to process.
     :type requests: `list`
     :ivar request_number: A unique identifier for tracking the number of
@@ -155,19 +152,8 @@ class RemotingServiceBase(object):
     :ivar amf_version: The AMF version to use.
         See :data:`ENCODING_TYPES <pyamf.ENCODING_TYPES>`.
     :type amf_version: `int`
-    :ivar referer: The referer, or HTTP referer, identifies the address of the
-        client. Ignored by default.
-    :type referer: `str`
-    :ivar user_agent: Contains information about the user agent (client)
-        originating the request. See L{DEFAULT_USER_AGENT}.
-    :type user_agent: `str`
-    :ivar connection: The underlying connection to the remoting server.
-    :type connection: `httplib.HTTPConnection` or `httplib.HTTPSConnection`
     :ivar headers: A list of persistent headers to send with each request.
     :type headers: :class:`~pyamf.remoting.HeaderCollection`
-    :ivar http_headers: A dict of HTTP headers to apply to the underlying
-        HTTP connection.
-    :type http_headers: `dict`
     :ivar strict: Whether to use strict AMF en/decoding or not.
     :type strict: `bool`
 
@@ -340,6 +326,14 @@ class HTTPRemotingService(RemotingServiceBase):
 
     def __init__(self, url, amf_version=pyamf.AMF0,
                  user_agent=None, **kwargs):
+        """
+        :ivar url: The url of the remote gateway in parsed form
+        :type url: :class:`~urlparse.ParseResult`
+        :ivar user_agent: The User-Agent header to pass to the server
+            (defaults to "Plasma/x.xx")
+        :type user_agent: `str`
+
+        """
         RemotingServiceBase.__init__(self, amf_version, **kwargs)
         self.url = urlparse(url)
         self.http_headers = self.BASE_HTTP_HEADERS.copy()
