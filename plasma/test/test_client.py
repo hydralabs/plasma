@@ -172,7 +172,7 @@ class TestRemotingService():
         try:
             yield y()
         except RegisteredError, e:
-            assert e.message == 'I am registered', 'Wrong error message'
+            eq_(str(e), 'I am registered')
         else:
             assert False, 'Expected a RegisteredError'
 
@@ -230,4 +230,3 @@ class TestRemotingService():
         req1 = x.addRequest(upper, 'str')
         x.removeRequest(req1)
         eq_(len(x.requests), 0)
-
