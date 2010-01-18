@@ -10,7 +10,7 @@ from twisted.internet import reactor
 from twisted.web import http
 from twisted.internet.defer import Deferred
 from pyamf import remoting
-from nose.tools import set_trace
+from pyamf.remoting import get_exception_from_fault
 import pyamf
 
 from plasma.version import version
@@ -240,7 +240,8 @@ class RemotingServiceBase(object):
         """
         for index, request in enumerate(self.requests):
             if request.deferred == deferred:
-                self.logger.debug('Removing request: %s', request)
+                if self.logger:
+                    self.logger.debug('Removing request: %s', request)
                 del self.requests[index]
                 return
 
@@ -264,7 +265,7 @@ class RemotingServiceBase(object):
             args = list(request.args)
             envelope[request.id] = remoting.Request(str(service), args)
 
-        envelope.headers = remoting.HeaderCollection(self.headers)
+        envelope.headers = self.headers
         return envelope
 
     def _handleAMFResponse(self, envelope, requests):
@@ -287,7 +288,9 @@ class RemotingServiceBase(object):
             if response.status == remoting.STATUS_OK:
                 request.deferred.callback(response.body)
             elif response.status == remoting.STATUS_ERROR:
-                request.deferred.errback(response.body)
+                exc_class = get_exception_from_fault(response.body)
+                exception = exc_class(response.body.description)
+                request.deferred.errback(exception)
 
     def _handleAMFError(self, failure, requests):
         for request in requests:
