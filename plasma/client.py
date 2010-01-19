@@ -130,9 +130,6 @@ class RequestWrapper(object):
         self.args = args
         self.deferred = Deferred()
 
-    def __str__(self):
-        return str(self.id)
-
 
 class RemotingServiceBase(object):
     """

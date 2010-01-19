@@ -2,7 +2,6 @@
 #
 # Copyright The Plasma Project.
 # See LICENSE.txt for details.
-from pyamf.remoting.gateway import authenticate
 
 """Tests for Remoting client."""
 
@@ -14,6 +13,7 @@ from twisted.web.server import Site
 from twisted.internet.defer import Deferred, inlineCallbacks
 from pyamf.remoting import RemotingError
 from pyamf.remoting.gateway.twisted import TwistedGateway
+from pyamf.remoting.gateway import authenticate
 import pyamf
 
 from plasma import client
@@ -89,6 +89,15 @@ class ServiceMethodProxyTestCase():
 
         x = client.ServiceMethodProxy('spam', None)
         eq_(str(x), 'spam')
+
+
+@raises(NotImplementedError)
+def testRemotingBaseInstance():
+    """
+    Make sure that RemotingServiceBase.execute() raises NotImplementedError.
+
+    """
+    client.RemotingServiceBase().execute()
 
 
 class TestRemotingServiceDry():
