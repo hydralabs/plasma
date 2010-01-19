@@ -91,7 +91,7 @@ class ServiceMethodProxyTestCase():
         eq_(str(x), 'spam')
 
 
-class TestRemotingService():
+class TestRemotingServiceDry():
     @classmethod
     def setup_class(cls):
         gateway.addService(FooService, 'foo')
@@ -119,11 +119,24 @@ class TestRemotingService():
         eq_(service.url.hostname, 'example.org')
         eq_(service.url.port, 8080)
 
+
+class TestRemotingServiceLive():
+    @classmethod
+    def setup_class(cls):
+        gateway.addService(FooService, 'foo')
+
+    @classmethod
+    def teardown_class(cls):
+        gateway.removeService(FooService)
+
+    def setup(self):
+        self.service = client.HTTPRemotingService('http://127.0.0.1:11111',
+                                                  logger=logging)
+    
     @deferred(2)
     @inlineCallbacks
     def test_single_request(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        y = x.getService('foo.uppercase')
+        y = self.service.getService('foo.uppercase')
 
         assert isinstance(y, client.ServiceProxy)
         eq_(y._name, 'foo.uppercase')
@@ -136,9 +149,7 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_service_method(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-
-        y = x.getService('foo')
+        y = self.service.getService('foo')
         assert isinstance(y, client.ServiceProxy)
 
         uppercase = y.uppercase
@@ -153,8 +164,7 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_dummy_error(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        y = x.getService('foo.dummy')
+        y = self.service.getService('foo.dummy')
 
         try:
             yield y()
@@ -166,8 +176,7 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_registered_error(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        y = x.getService('foo.reg_error')
+        y = self.service.getService('foo.reg_error')
 
         try:
             yield y()
@@ -179,14 +188,13 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_batch_call(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        upper = x.getService('foo.uppercase')
-        regerror = x.getService('foo.reg_error')
+        upper = self.service.getService('foo.uppercase')
+        regerror = self.service.getService('foo.reg_error')
 
-        d_upper1 = x.addRequest(upper, 'to upper case')
-        d_regerror = x.addRequest(regerror)
-        d_upper2 = x.addRequest(upper, 'this too')
-        x.execute()
+        d_upper1 = self.service.addRequest(upper, 'to upper case')
+        d_regerror = self.service.addRequest(regerror)
+        d_upper2 = self.service.addRequest(upper, 'this too')
+        self.service.execute()
 
         result1 = yield d_upper1
         eq_(result1, 'TO UPPER CASE')
@@ -202,9 +210,8 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_auth(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        x.setCredentials('testuser', 'secret')
-        y = x.getService('foo')
+        self.service.setCredentials('testuser', 'secret')
+        y = self.service.getService('foo')
 
         result = yield y.needs_auth()
         eq_(result, 'success')
@@ -212,9 +219,8 @@ class TestRemotingService():
     @deferred(2)
     @inlineCallbacks
     def test_wrong_credentials(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        x.setCredentials('testuser', 'wrong')
-        y = x.getService('foo')
+        self.service.setCredentials('testuser', 'wrong')
+        y = self.service.getService('foo')
 
         try:
             yield y.needs_auth()
@@ -224,9 +230,8 @@ class TestRemotingService():
             assert False, 'Expected a RemotingError'
 
     def test_remove_request(self):
-        x = client.HTTPRemotingService('http://127.0.0.1:11111')
-        upper = x.getService('foo.uppercase')
+        upper = self.service.getService('foo.uppercase')
         
-        req1 = x.addRequest(upper, 'str')
-        x.removeRequest(req1)
-        eq_(len(x.requests), 0)
+        req1 = self.service.addRequest(upper, 'str')
+        self.service.removeRequest(req1)
+        eq_(len(self.service.requests), 0)
