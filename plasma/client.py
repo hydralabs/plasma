@@ -249,7 +249,7 @@ class RemotingServiceBase(object):
         envelope = remoting.Envelope(self.amf_version)
 
         if self.logger:
-            self.logger.debug('AMF version: %s' % self.amf_version)
+            self.logger.debug('AMF version: %s', self.amf_version)
 
         for request in requests:
             service = request.service
