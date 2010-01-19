@@ -144,6 +144,14 @@ def testAppendToGatewayURL():
     eq_(service.url.path, '/path/flash/gateway')
 
 
+def testAddRemoveHTTPHeader():
+    service = client.HTTPRemotingService('http://example.org')
+    service.addHTTPHeader('Referer', 'http://example.net/path')
+    eq_(service.http_headers.get('Referer'), 'http://example.net/path')
+    service.removeHTTPHeader('Referer')
+    assert 'Referer' not in service.http_headers
+
+
 class TestRemotingServiceDry():
     @classmethod
     def setup_class(cls):
