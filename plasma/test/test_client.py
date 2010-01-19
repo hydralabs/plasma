@@ -78,37 +78,6 @@ class RegisteredError(Exception):
     pass
 
 
-class ServiceMethodProxyTestCase():
-    def test_create(self):
-        x = client.ServiceMethodProxy('a', 'b')
-
-        eq_(x.service, 'a')
-        eq_(x.name, 'b')
-
-    def test_call(self):
-        class TestService(object):
-            def __init__(self, s, args):
-                self.service = s
-                self.args = args
-
-            def _call(self, service, *args):
-                eq_(self.service, service)
-                eq_(self.args, args)
-
-        x = client.ServiceMethodProxy(None, None)
-        ts = TestService(x, [1, 2, 3])
-        x.service = ts
-
-        x(1, 2, 3)
-
-    def test_str(self):
-        x = client.ServiceMethodProxy('spam', 'eggs')
-        eq_(str(x), 'spam.eggs')
-
-        x = client.ServiceMethodProxy('spam', None)
-        eq_(str(x), 'spam')
-
-
 @raises(NotImplementedError)
 def testRemotingBaseInstance():
     """
