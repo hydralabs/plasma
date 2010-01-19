@@ -165,6 +165,11 @@ class TestHTTPRemotingServiceDry(object):
         self.service.removeHTTPHeader('Referer')
         assert 'Referer' not in self.service.http_headers
 
+    @raises(TypeError)
+    def testGetServiceWrongType(self):
+        foo = self.service.getService('foo')
+        self.service.getService(foo)
+
 
 class TestHTTPRemotingServiceLive():
     @classmethod
