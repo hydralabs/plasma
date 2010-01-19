@@ -346,7 +346,10 @@ class HTTPRemotingService(RemotingServiceBase):
                                    strict=self.strict))
         factory = HTTPClientFactory(self.url.geturl(), 'POST', body,
                                     self.http_headers, self.user_agent)
-        factory.deferred.addCallback(self._handleHTTPResponse, factory)
+        factory.deferred.addCallbacks(self._handleHTTPResponse,
+                                      self._handleHTTPError,
+                                      [factory],
+                                      errbackArgs=[factory])
         factory.deferred.addCallback(remoting.decode, strict=self.strict)
         factory.deferred.addCallbacks(self._handleAMFResponse,
                                       self._handleAMFError,
@@ -369,14 +372,6 @@ class HTTPRemotingService(RemotingServiceBase):
         """
         response_headers = factory.response_headers
 
-        # Make sure we got a response with a 200 status
-        if int(factory.status) != http.OK:
-            if self.logger:
-                self.logger.debug('Got response status: %s', factory.status)
-                self.logger.debug('Body: %s', response_body)
-            raise remoting.RemotingError('HTTP Gateway reported status %d %s' %
-                                         (factory.status, factory.message))
-
         # Check content type
         content_type = self._getHTTPHeader(response_headers, 'content-type')
         if content_type != remoting.CONTENT_TYPE:
@@ -393,6 +388,10 @@ class HTTPRemotingService(RemotingServiceBase):
             self.logger.debug('Read %d bytes for the response',
                               len(response_body))
         return response_body
+
+    def _handleHTTPError(self, error, factory):
+        raise remoting.RemotingError('HTTP Gateway reported status %s %s' %
+                                     (factory.status, factory.message))
 
     def _handleAMFResponse(self, response, requests):
         if remoting.APPEND_TO_GATEWAY_URL in response.headers:

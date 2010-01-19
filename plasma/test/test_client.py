@@ -12,9 +12,10 @@ from nose.twistedtools import reactor, deferred
 from twisted.web.server import Site
 from twisted.web.resource import Resource
 from twisted.internet.defer import Deferred, inlineCallbacks
-from pyamf.remoting import RemotingError
+from pyamf.remoting import RemotingError, Envelope
 from pyamf.remoting.gateway.twisted import TwistedGateway
 from pyamf.remoting.gateway import authenticate
+from pyamf import remoting
 import pyamf
 
 from plasma import client
@@ -45,7 +46,7 @@ def simple_authenticator(userid, password):
 
 class BadResource(Resource):
     def render_POST(self, request):
-        request.status = 500
+        request.setResponseCode(500)
         return 'ERROR'
 
 
@@ -115,6 +116,32 @@ def testRemotingBaseInstance():
 
     """
     client.RemotingServiceBase().execute()
+
+
+def testAddPersistentHeaders():
+    service = client.HTTPRemotingService('http://example.org')
+    envelope = Envelope()
+    persistent_headers = {'TestHeader': 9, 'AnotherTestHeader': 'test'}
+    envelope.headers[remoting.REQUEST_PERSISTENT_HEADER] = persistent_headers
+    service._handleAMFResponse(envelope, [])
+    eq_(service.headers, persistent_headers)
+
+
+def testChangeGatewayURL():
+    service = client.HTTPRemotingService('http://example.org')
+    envelope = Envelope()
+    envelope.headers[remoting.REPLACE_GATEWAY_URL] = 'http://example.net'
+    service._handleAMFResponse(envelope, [])
+    eq_(service.url.hostname, 'example.net')
+
+
+def testAppendToGatewayURL():
+    service = client.HTTPRemotingService('http://example.org')
+    envelope = Envelope()
+    envelope.headers[remoting.APPEND_TO_GATEWAY_URL] = '/path/flash/gateway'
+    eq_(service.url.path, '')
+    service._handleAMFResponse(envelope, [])
+    eq_(service.url.path, '/path/flash/gateway')
 
 
 class TestRemotingServiceDry():
