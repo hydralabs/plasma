@@ -64,7 +64,7 @@ class FooService(object):
 
     def reg_error(self, request):
         raise RegisteredError('I am registered')
-    
+
     def needs_auth(self, request):
         return 'success'
     needs_auth = authenticate(needs_auth, simple_authenticator)
@@ -118,67 +118,31 @@ def testRemotingBaseInstance():
     client.RemotingServiceBase().execute()
 
 
-def testAddPersistentHeaders():
+@raises(TypeError)
+def test_create_noargs():
+    """
+    Make sure that HTTPRemotingService requires an URL.
+    
+    """
+    client.HTTPRemotingService()
+
+
+def test_url():
     service = client.HTTPRemotingService('http://example.org')
-    envelope = Envelope()
-    persistent_headers = {'TestHeader': 9, 'AnotherTestHeader': 'test'}
-    envelope.headers[remoting.REQUEST_PERSISTENT_HEADER] = persistent_headers
-    service._handleAMFResponse(envelope, [])
-    eq_(service.headers, persistent_headers)
+
+    eq_(service.url.scheme, 'http')
+    eq_(service.url.hostname, 'example.org')
 
 
-def testChangeGatewayURL():
-    service = client.HTTPRemotingService('http://example.org')
-    envelope = Envelope()
-    envelope.headers[remoting.REPLACE_GATEWAY_URL] = 'http://example.net'
-    service._handleAMFResponse(envelope, [])
-    eq_(service.url.hostname, 'example.net')
+def test_amf3():
+    service = client.HTTPRemotingService('http://example.org', pyamf.AMF3)
+    eq_(service.amf_version, pyamf.AMF3)
 
 
-def testAppendToGatewayURL():
-    service = client.HTTPRemotingService('http://example.org')
-    envelope = Envelope()
-    envelope.headers[remoting.APPEND_TO_GATEWAY_URL] = '/path/flash/gateway'
-    eq_(service.url.path, '')
-    service._handleAMFResponse(envelope, [])
-    eq_(service.url.path, '/path/flash/gateway')
-
-
-def testAddRemoveHTTPHeader():
-    service = client.HTTPRemotingService('http://example.org')
-    service.addHTTPHeader('Referer', 'http://example.net/path')
-    eq_(service.http_headers.get('Referer'), 'http://example.net/path')
-    service.removeHTTPHeader('Referer')
-    assert 'Referer' not in service.http_headers
-
-
-class TestRemotingServiceDry():
-    @classmethod
-    def setup_class(cls):
-        gateway.addService(FooService, 'foo')
-
-    @classmethod
-    def teardown_class(cls):
-        gateway.removeService(FooService)
-
-    @raises(TypeError)
-    def test_create_noargs(self):
-        client.HTTPRemotingService()
-
-    def test_url(self):
-        service = client.HTTPRemotingService('http://example.org')
-
-        eq_(service.url.scheme, 'http')
-        eq_(service.url.hostname, 'example.org')
-
-    def test_amf3(self):
-        service = client.HTTPRemotingService('http://example.org', pyamf.AMF3)
-        eq_(service.amf_version, pyamf.AMF3)
-
-    def test_port(self):
-        service = client.HTTPRemotingService('http://example.org:8080')
-        eq_(service.url.hostname, 'example.org')
-        eq_(service.url.port, 8080)
+def test_port():
+    service = client.HTTPRemotingService('http://example.org:8080')
+    eq_(service.url.hostname, 'example.org')
+    eq_(service.url.port, 8080)
 
 
 @raises(RemotingError)
@@ -199,7 +163,41 @@ def test_bad_content_type():
     return y.bar()
 
 
-class TestRemotingServiceLive():
+class TestHTTPRemotingServiceDry(object):
+    def setup(self):
+        self.service = client.HTTPRemotingService('http://example.org')
+    
+    def testAddPersistentHeaders(self):
+        envelope = Envelope()
+        persistent_headers = {'TestHeader': 9, 'AnotherTestHeader': 'test'}
+        envelope.headers[remoting.REQUEST_PERSISTENT_HEADER] = \
+            persistent_headers
+        self.service._handleAMFResponse(envelope, [])
+        eq_(self.service.headers, persistent_headers)
+
+    def testChangeGatewayURL(self):
+        envelope = Envelope()
+        envelope.headers[remoting.REPLACE_GATEWAY_URL] = 'http://example.net'
+        self.service._handleAMFResponse(envelope, [])
+        eq_(self.service.url.hostname, 'example.net')
+
+    def testAppendToGatewayURL(self):
+        envelope = Envelope()
+        envelope.headers[remoting.APPEND_TO_GATEWAY_URL] = \
+            '/path/flash/gateway'
+        eq_(self.service.url.path, '')
+        self.service._handleAMFResponse(envelope, [])
+        eq_(self.service.url.path, '/path/flash/gateway')
+
+    def testAddRemoveHTTPHeader(self):
+        self.service.addHTTPHeader('Referer', 'http://example.net/path')
+        eq_(self.service.http_headers.get('Referer'),
+            'http://example.net/path')
+        self.service.removeHTTPHeader('Referer')
+        assert 'Referer' not in self.service.http_headers
+
+
+class TestHTTPRemotingServiceLive():
     @classmethod
     def setup_class(cls):
         gateway.addService(FooService, 'foo')
@@ -211,7 +209,7 @@ class TestRemotingServiceLive():
     def setup(self):
         self.service = client.HTTPRemotingService('http://127.0.0.1:11111/gw',
                                                   logger=logging)
-    
+
     @deferred(2)
     @inlineCallbacks
     def test_single_request(self):
@@ -310,7 +308,7 @@ class TestRemotingServiceLive():
 
     def test_remove_request(self):
         upper = self.service.getService('foo.uppercase')
-        
+
         req1 = self.service.addRequest(upper, 'str')
         self.service.removeRequest(req1)
         eq_(len(self.service.requests), 0)
