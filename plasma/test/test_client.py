@@ -170,6 +170,10 @@ class TestHTTPRemotingServiceDry(object):
         foo = self.service.getService('foo')
         self.service.getService(foo)
 
+    @raises(LookupError)
+    def testRemoveNonexistentRequest(self):
+        self.service.removeRequest(Deferred())
+
 
 class TestHTTPRemotingServiceLive():
     @classmethod
@@ -182,7 +186,8 @@ class TestHTTPRemotingServiceLive():
 
     def setup(self):
         self.service = client.HTTPRemotingService('http://127.0.0.1:11111/gw',
-                                                  logger=logging)
+                                                  logger=logging,
+                                                  user_agent='UnitTester')
 
     @deferred(2)
     @inlineCallbacks
