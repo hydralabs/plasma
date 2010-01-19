@@ -191,19 +191,6 @@ class RemotingServiceBase(object):
 
         return ServiceProxy(self, name, auto_execute)
 
-    def getRequest(self, id_):
-        """
-        Gets a request based on the id.
-
-        :raise LookupError: Request not found.
-
-        """
-        for request in self.requests:
-            if request.id == id_:
-                return request
-
-        raise LookupError("Request %s not found" % id_)
-
     def addRequest(self, service, *args):
         """
         Adds a request to be sent to the remoting gateway.
