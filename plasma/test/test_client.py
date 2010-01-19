@@ -10,6 +10,7 @@ import logging
 from nose.tools import eq_, raises
 from nose.twistedtools import reactor, deferred
 from twisted.web.server import Site
+from twisted.web.resource import Resource
 from twisted.internet.defer import Deferred, inlineCallbacks
 from pyamf.remoting import RemotingError
 from pyamf.remoting.gateway.twisted import TwistedGateway
@@ -23,7 +24,12 @@ def setup():
     global gateway
     gateway = TwistedGateway(logger=logging)
     gateway.isLeaf = True
-    site = Site(gateway)
+    root = Resource()
+    root.putChild('gw', gateway)
+    root.putChild('bad', BadResource())
+    root.putChild('badtype', BadContentTypeResource())
+
+    site = Site(root)
     reactor.listenTCP(11111, site)
     pyamf.add_error_class(RegisteredError, u'RegisteredError')
 
@@ -35,6 +41,17 @@ def teardown():
 
 def simple_authenticator(userid, password):
     return userid == 'testuser' and password == 'secret'
+
+
+class BadResource(Resource):
+    def render_POST(self, request):
+        request.status = 500
+        return 'ERROR'
+
+
+class BadContentTypeResource(Resource):
+    def render_POST(self, request):
+        return 'hello'
 
 
 class FooService(object):
@@ -129,6 +146,24 @@ class TestRemotingServiceDry():
         eq_(service.url.port, 8080)
 
 
+@raises(RemotingError)
+@deferred()
+def test_server_error():
+    service = client.HTTPRemotingService('http://127.0.0.1:11111/bad',
+                                         logger=logging)
+    y = service.getService('foo')
+    return y.bar()
+
+
+@raises(RemotingError)
+@deferred()
+def test_bad_content_type():
+    service = client.HTTPRemotingService('http://127.0.0.1:11111/badtype',
+                                         logger=logging)
+    y = service.getService('foo')
+    return y.bar()
+
+
 class TestRemotingServiceLive():
     @classmethod
     def setup_class(cls):
@@ -139,7 +174,7 @@ class TestRemotingServiceLive():
         gateway.removeService(FooService)
 
     def setup(self):
-        self.service = client.HTTPRemotingService('http://127.0.0.1:11111',
+        self.service = client.HTTPRemotingService('http://127.0.0.1:11111/gw',
                                                   logger=logging)
     
     @deferred(2)

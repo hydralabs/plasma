@@ -270,7 +270,6 @@ class RemotingServiceBase(object):
     def _handleAMFError(self, failure, requests):
         for request in requests:
             request.deferred.errback(failure)
-        raise failure
 
     def execute(self):
         """
