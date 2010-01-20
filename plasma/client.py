@@ -10,7 +10,6 @@ from urlparse import urlparse
 
 from twisted.web.client import HTTPClientFactory
 from twisted.internet import reactor
-from twisted.web import http
 from twisted.internet.defer import Deferred
 from pyamf import remoting
 from pyamf.remoting import get_exception_from_fault
