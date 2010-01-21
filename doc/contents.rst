@@ -4,11 +4,14 @@
 
 .. toctree::
 
-   community/index.rst
+   whatsnew/index.rst
+   tutorials/index.rst
+   library/index.rst
    architecture/index.rst
+   community/index.rst
 
+   install.rst
    about.rst
    bugs.rst
    license.rst
    changelog.rst
-   install.rst

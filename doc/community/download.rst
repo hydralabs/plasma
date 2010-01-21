@@ -9,10 +9,9 @@ instructions, see the included :doc:`Installation Guide <../install>`.
 Latest Development Source Code
 ==============================
 
-We use `Git`_ for source revision control and code sharing.
+:doc:`../whatsnew/0.1`
 
-Git
----
+We use `Git`_ for source revision control and code sharing.
 
 The Git repository URL for the Plasma project is at
 ``git://plasmads.org/plasma.git``.

@@ -1,4 +1,4 @@
-# Makefile for Sphinx documentation
+# Makefile for Plasma documentation
 #
 
 # You can set these variables from the command line.
@@ -31,6 +31,7 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	mkdir -p $(BUILDDIR)/html $(BUILDDIR)/doctrees
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
@@ -61,9 +62,9 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Plasma.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/plasma.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Plasma.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/plasma.qhc"
 
 latex:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
@@ -87,3 +88,16 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+dist:
+	-rm -rf dist
+	mkdir -p dist
+
+	# archive the HTML
+	make html
+	cp -pPR $(SPHINXBUILD)/html dist/plasma-docs-html
+	tar -C dist -cf dist/plasma-docs-html.tar plasma-docs-html
+	bzip2 -9 -k dist/plasma-docs-html.tar
+	(cd dist; zip -q -r -9 plasma-docs-html.zip plasma-docs-html)
+	rm -r dist/plasma-docs-html
+	rm dist/plasma-docs-html.tar

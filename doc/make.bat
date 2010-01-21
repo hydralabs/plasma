@@ -1,6 +1,6 @@
 @ECHO OFF
 
-REM Command file for Sphinx documentation
+REM Command file for Plasma documentation
 
 set SPHINXBUILD=sphinx-build
 set BUILDDIR=_build
@@ -74,9 +74,9 @@ if "%1" == "qthelp" (
 	echo.
 	echo.Build finished; now you can run "qcollectiongenerator" with the ^
 .qhcp project file in %BUILDDIR%/qthelp, like this:
-	echo.^> qcollectiongenerator %BUILDDIR%\qthelp\Plasma.qhcp
+	echo.^> qcollectiongenerator %BUILDDIR%\qthelp\Thijs.qhcp
 	echo.To view the help file:
-	echo.^> assistant -collectionFile %BUILDDIR%\qthelp\Plasma.ghc
+	echo.^> assistant -collectionFile %BUILDDIR%\qthelp\Thijs.ghc
 	goto end
 )
 

@@ -8,3 +8,4 @@
    download.rst
    mailinglist.rst
    irc.rst
+   maintainers.rst
