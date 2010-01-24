@@ -1,0 +1,11 @@
+*.py[co]
+*.class
+*.egg-info
+*.coverage
+.project
+.pydevproject
+.settings/
+build/
+dist/
+cover/
+doc/_build/
