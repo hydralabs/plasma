@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) The Plasma Project.
+# Copyright The Plasma Project.
 # See LICENSE.txt for details.
 #
 # Plasma documentation build configuration file.

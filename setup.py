@@ -1,4 +1,4 @@
-# Copyright (c) 2009 The Plasma Project.
+# Copyright The Plasma Project.
 # See LICENSE for details.
 
 import os.path

@@ -1,4 +1,4 @@
-# Copyright (c) The Plasma Project.
+# Copyright The Plasma Project.
 # See LICENSE.txt for details.
 
 import os
