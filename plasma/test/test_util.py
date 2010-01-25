@@ -1,7 +1,9 @@
-# Copyright (c) 2007-2009 The Plasma Project.
+# Copyright The Plasma Project.
 # See LICENSE.txt for details.
 
-"""Plasma utility classes and helper functions."""
+"""
+Plasma utility classes and helper functions.
+"""
 
 import unittest
 
@@ -9,7 +11,9 @@ from plasma import util
 
 
 class ConstantTestCase(unittest.TestCase):
-    """Tests for :class:`util.Constant`"""
+    """
+    Tests for :class:`util.Constant`
+    """
 
     def test_create(self):
         x = util.Constant('foo')

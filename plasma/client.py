@@ -341,8 +341,9 @@ class HTTPRemotingService(RemotingServiceBase):
         self.requests = []
 
         port = self.url.port or 80
-        body = str(remoting.encode(self._createAMFRequest(requests),
-                                   strict=self.strict))
+        body = remoting.encode(self._createAMFRequest(requests),
+                                   strict=self.strict).getvalue()
+
         factory = HTTPClientFactory(self.url.geturl(), 'POST', body,
                                     self.http_headers, self.user_agent)
         factory.deferred.addCallbacks(self._handleHTTPResponse,

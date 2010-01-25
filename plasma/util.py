@@ -1,7 +1,11 @@
-# Copyright (c) 2007-2009 The Plasma Project.
+# Copyright The Plasma Project.
 # See LICENSE.txt for details.
 
-"""Plasma utility classes and helper functions."""
+"""
+Plasma utility classes and helper functions.
+"""
+
+import pyamf
 
 
 class Constant(object):
@@ -11,7 +15,6 @@ class Constant(object):
 
         class Foo(object):
             ENDPOINT_HEADER = Constant('DSEndpoint', 'The name for the endpoint header.')
-
     """
 
     def __init__(self, value, doc=None):
@@ -29,3 +32,10 @@ class Constant(object):
 
     def __repr__(self):
         return repr(self.value)
+
+
+def to_amf(obj, encoder):
+    return obj.value
+
+
+pyamf.add_type(Constant, to_amf)

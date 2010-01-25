@@ -5,5 +5,4 @@
 Flex Compatibility.
 
 .. versionadded:: 0.1
-
 """
