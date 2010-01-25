@@ -44,8 +44,12 @@ class DataMessage(messages.AsyncMessage):
     
     .. seealso:: `DataMessage on Livedocs
         <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>`_
-
     """
+
+    class __amf__:
+        static = ('identity', 'operation',)
+
+    __slots__ = __amf__.static
 
     def __init__(self, **kwargs):
         messages.AsyncMessage.__init__(self, **kwargs)
@@ -61,23 +65,22 @@ class SequencedMessage(messages.AcknowledgeMessage):
     :ivar sequenceId: Unique identifier for a sequence within a remote
         destination. This value is only unique for the endpoint and
         destination contacted.
-    :ivar sequenceProxies: ???
     :ivar sequenceSize: How many items reside in the remote sequence.
 
     .. seealso:: `SequencedMessage on Livedocs
         <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/SequencedMessage.html>`_
-
     """
+
+    class __amf__:
+        static = ('sequenceId', 'sequenceSize',)
+
+    __slots__ = __amf__.static
 
     def __init__(self, **kwargs):
         messages.AcknowledgeMessage.__init__(self, **kwargs)
 
         self.sequenceId = kwargs.pop('sequenceId', None)
-        self.sequenceProxies = kwargs.pop('sequenceProxies', None)
         self.sequenceSize = kwargs.pop('sequenceSize', None)
-
-        # XXX: do we encode this?!
-        self.dataMessage = kwargs.pop('dataMessage', None)
 
 
 class PagedMessage(SequencedMessage):
@@ -91,8 +94,12 @@ class PagedMessage(SequencedMessage):
 
     .. seealso:: `PagedMessage on Livedocs
         <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/PagedMessage.html>`_
-
     """
+
+    class __amf__:
+        static = ('pageCount', 'pageIndex',)
+
+    __slots__ = __amf__.static
 
     def __init__(self, **kwargs):
         SequencedMessage.__init__(self, **kwargs)
@@ -119,6 +126,11 @@ class DataErrorMessage(messages.ErrorMessage):
         http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataErrorMessage.html>`_
 
     """
+
+    class __amf__:
+        static = ('cause', 'propertyNames', 'serverObject')
+
+    __slots__ = __amf__.static
 
     def __init__(self, **kwargs):
         messages.ErrorMessage.__init__(self, **kwargs)
