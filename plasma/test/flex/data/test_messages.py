@@ -246,4 +246,99 @@ class PagedMessageTestCase(unittest.TestCase):
         self.assertTrue(isinstance(m, messages.PagedMessage))
         self.assertEquals(util.dict_for_slots(m), kwargs)
 
+
+class DataErrorMessageTestCase(unittest.TestCase):
+    """
+    Tests for :class:`messages.DataErrorMessage`
+    """
+
+    def test_alias(self):
+        alias = pyamf.get_class_alias(messages.DataErrorMessage)
+
+        alias.compile()
+
+        self.assertTrue(alias.sealed)
+        self.assertFalse(alias.dynamic)
+
+        self.assertEquals(alias.static_attrs, ['body', 'cause', 'clientId',
+            'correlationId', 'destination', 'extendedData', 'faultCode',
+            'faultDetail', 'faultString', 'headers', 'messageId',
+            'propertyNames', 'rootCause', 'serverObject', 'timeToLive',
+            'timestamp'])
+
+    def test_create(self):
+        m = messages.DataErrorMessage()
+
+        self.assertEquals(m.body, None)
+        self.assertEquals(m.timestamp, None)
+        self.assertEquals(m.destination, None)
+        self.assertEquals(m.clientId, None)
+        self.assertEquals(m.headers, {})
+        self.assertEquals(m.timeToLive, None)
+        self.assertEquals(m.messageId, None)
+        self.assertEquals(m.extendedData, {})
+        self.assertEquals(m.faultCode, None)
+        self.assertEquals(m.faultDetail, None)
+        self.assertEquals(m.faultString, None)
+        self.assertEquals(m.rootCause, {})
+        self.assertEquals(m.cause, None)
+        self.assertEquals(m.propertyNames, None)
+        self.assertEquals(m.serverObject, None)
+
+        m = messages.DataErrorMessage(cause='foo', propertyNames='bar',
+            serverObject=3, spam='eggs')
+
+        self.assertFalse(hasattr(m, 'spam'))
+        self.assertEquals(m.body, None)
+        self.assertEquals(m.timestamp, None)
+        self.assertEquals(m.destination, None)
+        self.assertEquals(m.clientId, None)
+        self.assertEquals(m.headers, {})
+        self.assertEquals(m.timeToLive, None)
+        self.assertEquals(m.messageId, None)
+        self.assertEquals(m.extendedData, {})
+        self.assertEquals(m.faultCode, None)
+        self.assertEquals(m.faultDetail, None)
+        self.assertEquals(m.faultString, None)
+        self.assertEquals(m.rootCause, {})
+        self.assertEquals(m.cause, 'foo')
+        self.assertEquals(m.propertyNames, 'bar')
+        self.assertEquals(m.serverObject, 3)
+
+    def test_amf(self):
+        kwargs = {
+            'body': ['foo'],
+            'timestamp': 'bar',
+            'destination': 'baz',
+            'clientId': 'gak',
+            'headers': {'blarg': 'nah'},
+            'timeToLive': 103,
+            'messageId': 'spam',
+            'correlationId': 'woot',
+            'extendedData': 'eggs',
+            'faultString': 'eggs',
+            'faultCode': 'blarg',
+            'faultDetail': '1234',
+            'rootCause': None,
+            'cause': 3,
+            'propertyNames': ['foo', 'bar'],
+            'serverObject': {},
+        }
+
+        m = messages.DataErrorMessage(**kwargs)
+
+        bytes = pyamf.encode(m, encoding=pyamf.AMF3).getvalue()
+
+        self.assertEquals(bytes, '\n\x82\x03Gflex.data.messages.'
+            'DataErrorMessage\tbody\x0bcause\x11clientId\x1bcorrelationId'
+            '\x17destination\x19extendedData\x13faultCode\x17faultDetail'
+            '\x17faultString\x0fheaders\x13messageId\x1bpropertyNames\x13'
+            'rootCause\x19serverObject\x15timeToLive\x13timestamp\t\x03\x01'
+            '\x06\x07foo\x04\x03\x06\x07gak\x06\twoot\x06\x07baz\x06\teggs'
+            '\x06\x0bblarg\x06\t1234\x06*\n\x0b\x01,\x06\x07nah\x01\x06\tspam'
+            '\t\x05\x01\x06"\x06\x07bar\x01\n\x05\x01\x04g\x064')
+
+        m = pyamf.decode(bytes, encoding=pyamf.AMF3).next()
+
+        self.assertTrue(isinstance(m, messages.DataErrorMessage))
         self.assertEquals(util.dict_for_slots(m), kwargs)
