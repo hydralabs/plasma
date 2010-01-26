@@ -20,4 +20,7 @@ Active
    **nick**
       Nick Joyce <nick@boxdesign.co.uk>
    **agronholm**
-      Alex Gršnholm <alex.gronholm@nextday.fi>
+      Alex |Gronholm| <alex.gronholm@nextday.fi>
+
+
+.. |Gronholm| unicode:: Gr U+00F6 nholm
