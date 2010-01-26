@@ -45,17 +45,20 @@ def simple_authenticator(userid, password):
 
 
 class BadResource(Resource):
+
     def render_POST(self, request):
         request.setResponseCode(500)
         return 'ERROR'
 
 
 class BadContentTypeResource(Resource):
+
     def render_POST(self, request):
         return 'hello'
 
 
 class FooService(object):
+
     def uppercase(self, request, string):
         return string.upper()
 
@@ -91,7 +94,7 @@ def testRemotingBaseInstance():
 def test_create_noargs():
     """
     Make sure that HTTPRemotingService requires an URL.
-    
+
     """
     client.HTTPRemotingService()
 
@@ -133,9 +136,10 @@ def test_bad_content_type():
 
 
 class TestHTTPRemotingServiceDry(object):
+
     def setup(self):
         self.service = client.HTTPRemotingService('http://example.org')
-    
+
     def testAddPersistentHeaders(self):
         envelope = Envelope()
         persistent_headers = {'TestHeader': 9, 'AnotherTestHeader': 'test'}
@@ -176,6 +180,7 @@ class TestHTTPRemotingServiceDry(object):
 
 
 class TestHTTPRemotingServiceLive():
+
     @classmethod
     def setup_class(cls):
         gateway.addService(FooService, 'foo')
@@ -215,7 +220,6 @@ class TestHTTPRemotingServiceLive():
         assert isinstance(deferred, Deferred)
         result = yield deferred
         eq_(result, 'TESTSTRING')
-
 
     @deferred(2)
     @inlineCallbacks

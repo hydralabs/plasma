@@ -14,7 +14,8 @@ class Constant(object):
     constants in classes. E.g.::
 
         class Foo(object):
-            ENDPOINT_HEADER = Constant('DSEndpoint', 'The name for the endpoint header.')
+            ENDPOINT_HEADER = Constant('DSEndpoint',
+                                       'The name for the endpoint header.')
     """
 
     def __init__(self, value, doc=None):

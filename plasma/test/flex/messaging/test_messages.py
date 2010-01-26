@@ -162,7 +162,7 @@ class CommandMessageTestCase(unittest.TestCase):
 
         self.assertEquals(alias.static_attrs, ['body', 'clientId',
             'correlationId', 'destination', 'headers', 'messageId',
-            'operation','timeToLive', 'timestamp'])
+            'operation', 'timeToLive', 'timestamp'])
 
 
 class ErrorMessageTestCase(unittest.TestCase):

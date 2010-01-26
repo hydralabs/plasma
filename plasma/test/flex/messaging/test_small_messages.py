@@ -4,7 +4,7 @@
 # See LICENSE.txt for details.
 
 """
-ISmallMessage Flex Messaging compatibility tests.
+`ISmallMessage` Flex Messaging compatibility tests.
 
 .. versionadded:: 0.1
 """
@@ -127,7 +127,9 @@ class CommandMessageExtTestCase(BaseTestCase):
         Test to ensure that 0 is written for the command flag when operation
         is `None`.
         """
+
         class MockDataOutput:
+
             written = []
 
             def writeUnsignedByte(self, byte):

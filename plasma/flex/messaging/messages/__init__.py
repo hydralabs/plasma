@@ -22,8 +22,7 @@ __all__ = [
     'RemotingMessage',
     'CommandMessage',
     'AcknowledgeMessage',
-    'ErrorMessage'
-]
+    'ErrorMessage']
 
 NAMESPACE = 'flex.messaging.messages'
 
@@ -199,7 +198,6 @@ class ErrorMessage(AcknowledgeMessage):
     #: If a message may not have been delivered, the faultCode will contain
     #: this constant.
     DELIVERY_IN_DOUBT = "Client.Error.DeliveryInDoubt"
-
 
     class __amf__:
         static = ('extendedData', 'faultCode', 'faultDetail', 'faultString',

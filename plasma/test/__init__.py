@@ -25,6 +25,7 @@ def failUnlessIdentical(self, first, second, msg=None):
 
     return first
 
+
 def failIfIdentical(self, first, second, msg=None):
     """
     Fail the test if C{first} is C{second}.  This is an

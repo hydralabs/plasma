@@ -11,6 +11,7 @@ from urlparse import urlparse
 from twisted.web.client import HTTPClientFactory
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
+
 from pyamf import remoting
 from pyamf.remoting import get_exception_from_fault
 import pyamf
@@ -38,7 +39,6 @@ class ServiceMethodProxy(object):
     def __call__(self, *args):
         """
         Inform the proxied service that this function has been called.
-        
         """
         return self.service._call(self, *args)
 
@@ -98,14 +98,14 @@ class ServiceProxy(object):
     def __call__(self, *args):
         """
         This allows services to be 'called' without a method name.
-        
+
         """
         return self._call(ServiceMethodProxy(self, None), *args)
 
     def __str__(self):
         """
         Returns a string representation of the name of the service.
-        
+
         """
         return self._name
 
@@ -190,7 +190,7 @@ class RemotingServiceBase(object):
     def addRequest(self, service, *args):
         """
         Adds a request to be sent to the remoting gateway.
-        
+
         :return: a :class:`Deferred` that will callback when the invocation
                  result is available
 
@@ -318,14 +318,14 @@ class HTTPRemotingService(RemotingServiceBase):
     def addHTTPHeader(self, name, value):
         """
         Adds a header to the underlying HTTP connection.
-        
+
         """
         self.http_headers[name] = value
 
     def removeHTTPHeader(self, name):
         """
         Deletes an HTTP header.
-        
+
         """
         del self.http_headers[name]
 

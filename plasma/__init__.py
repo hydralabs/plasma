@@ -53,7 +53,8 @@ def blaze_loader(alias):
     Loader for BlazeDS framework compatibility classes, specifically
     implementing ISmallMessage.
 
-    .. seealso:: `BlazeDS (external)<http://opensource.adobe.com/wiki/display/blazeds/BlazeDS>`_
+    .. seealso:: `BlazeDS (external)
+       <http://opensource.adobe.com/wiki/display/blazeds/BlazeDS>`_
     :since: 0.1
     """
     if alias not in ['DSC', 'DSK', 'DSA']:

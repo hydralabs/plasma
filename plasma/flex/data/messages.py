@@ -20,8 +20,7 @@ __all__ = [
     'DataMessage',
     'SequencedMessage',
     'PagedMessage',
-    'DataErrorMessage'
-]
+    'DataErrorMessage']
 
 
 class DataMessage(messages.AsyncMessage):
@@ -41,10 +40,9 @@ class DataMessage(messages.AsyncMessage):
     :ivar operation: Provides access to the operation/command of this
         `DataMessage`. Operations indicate how the remote destination should
         process this message.
-    
+
     .. seealso:: `DataMessage on Livedocs
         <http://livedocs.adobe.com/flex/201/langref/mx/data/messages/DataMessage.html>`_
-
     """
 
     def __init__(self, **kwargs):

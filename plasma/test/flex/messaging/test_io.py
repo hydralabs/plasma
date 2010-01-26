@@ -28,6 +28,7 @@ class ArrayListTestCase(unittest.TestCase):
         self.assertEquals(io.ArrayList(('a', 'b', 'b')), ['a', 'b', 'b'])
 
         class X(object):
+
             def __iter__(self):
                 return iter(['foo', 'bar', 'baz'])
 
@@ -74,6 +75,7 @@ class ArrayListTestCase(unittest.TestCase):
         c = io.ArrayList([u'∑œ', 'd'])
 
         class X(object):
+
             def __iter__(self):
                 return iter(['foo', 'bar', 'baz'])
 
@@ -93,7 +95,9 @@ class ArrayListTestCase(unittest.TestCase):
         over is read from the stream.
 
         """
+
         class MockDataInput:
+
             def readObject(self):
                 return object()
 
