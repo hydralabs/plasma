@@ -11,6 +11,8 @@ versions of Plasma.
  - Added support for flex.messages.io.ArrayList (Ticket:5)
  - Added support for flex.graphics.ImageSnapshot (Ticket:13)
  - Added an asynchronous remoting client (Ticket:20)
+ - Added support for evaluating SQL92 expressions in message selectors
+   (Ticket:39)
 
 0.0.1 (2007-09-20)
 ------------------
