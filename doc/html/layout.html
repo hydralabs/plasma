@@ -1,11 +1,23 @@
 {% extends "!layout.html" %}
 {% block document %}
-<div>
-<a class="toplogo" href="{{ pathto('index') }}">
-<!--<img src="{{ pathto('_static/logo.png', 1) }}" border="0"/>-->
-{{ docstitle|e }}
-</a>
+<table><tr>
+<td><h1><a class="toplogo" href="{{ pathto('index') }}">Plasma</a></h1>
+<td width="100%" align="right">
+<div id="searchbox" style="display: none">
+            <h3>{{ _('Quick search') }}</h3>
+              <form class="search" action="{{ pathto('search') }}" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="{{ _('Go') }}" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              {{ _('Enter search terms or a module, class or function name.') }}
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
 </div>
+</td></tr></table>
 {{ super() }}
 {% endblock %}
 {% block relbar1 %}
@@ -15,12 +27,14 @@
 {% block sidebartoc %}
 <h3>Download</h3>
 <ul>
-	<li><a href="{{ pathto('community/download') }}">Releases</a></li>
-	<li><a href="{{ pathto('community/download') }}">Source</a> <font color='black'>|</font> <a href="http://code.plasmads.org/browser">Browse</a></li>
+	<li><a href="{{ pathto('community/download') }}#latest-development-source-code">Source</a> <font color='black'>|</font> <a href="http://dev.plasmads.org/browser">Browse</a></li>
 </ul>
 
 <h3>Documentation</h3>
 <ul>
+	{% if current_page_name != 'index' %}
+	<li><a href="{{ pathto('index') }}">Home</a></li>
+	{% endif %}
 	<li><a href="{{ pathto('architecture/overview') }}">Features</a></li>
         <li><a href="{{ pathto("install") }}">Installation</a></li>
 	<li><a href="{{ pathto('tutorials/index') }}">Tutorials</a></li>
@@ -39,11 +53,10 @@
 
 <h3>Development</h3>
 <ul>
-	<li><a href="http://code.plasmads.org/roadmap">Roadmap</a></li>
-	<li><a href="http://code.plasmads.org/timeline">Timeline</a></li>
-        <li><a href="http://code.plasmads.org/report">View Tickets</a></li>
-	<li><a href="http://code.plasmads.org/newticket">New Ticket</a></li>
-        <li><a href="http://code.plasmads.org/buildbot">BuildBot</a></li>
+	<li><a href="http://dev.plasmads.org/roadmap">Roadmap</a></li>
+	<li><a href="http://dev.plasmads.org/timeline">Timeline</a></li>
+        <li><a href="http://dev.plasmads.org/report">View Tickets</a></li>
+	<li><a href="http://dev.plasmads.org/newticket">New Ticket</a></li>
 </ul>
 {{ super() }}
 {% endblock %}

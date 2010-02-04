@@ -111,7 +111,7 @@ html_title = '%s - %s' % (project, description)
 html_static_path = ['html/static']
 
 # The name of an image file (.ico) that is the favicon of the docs.
-html_favicon = 'plasma.ico'
+#html_favicon = 'plasma.ico'
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
