@@ -12,10 +12,13 @@ This module contains the message classes used with Flex Data Services.
 .. versionadded: 0.1
 """
 
+import uuid
+
 import pyamf
 
 from plasma.flex.messaging.messages import operations
 
+from errors import MessageError, InvalidOperationError, OperationNotImplementedError
 
 __all__ = [
     'AsyncMessage',
@@ -25,7 +28,6 @@ __all__ = [
     'ErrorMessage']
 
 NAMESPACE = 'flex.messaging.messages'
-
 
 class AbstractMessage(object):
     """
@@ -55,13 +57,53 @@ class AbstractMessage(object):
     :type timeToLive: `int`
     :ivar timestamp: Timestamp when the message was generated.
     :type timestamp: `int`
+    :ivar context: Message metadata
+    :type context: :class:`MessageContext`
     """
+
+    DESTINATION_CLIENT_ID = 'DSDstClientId'
+
+    ENDPOINT = 'DSEndpoint'
+
+    FLEX_CLIENT_ID = 'DSId'
+
+    PRIORTY = 'DSPriority'
+
+    REMOTE_CREDENTIALS = 'DSRemoteCredentials'
+
+    REMOTE_CREDENTIALS_CHARSET = 'DSRemoteCredentialsCharset'
+
+    REQUEST_TIMEOUT = 'DSRequestTimeout'
+
+    STATUS = 'DSStatusCode'
+
+    VALIDATE_ENDPOINT = 'DSValidateEndpoint'
+
+    SUBTOPIC = 'DSSubtopic'
+
+    ERROR_HINT = 'DSErrorHint'
+
+    RETRYABLE_ERROR_HINT = 'DSRetryableErrorHint'
+
+    SELECTOR = 'DSSelector'
+
+    @staticmethod
+    def generateId():
+        """
+        Generates an ID suitable for use as a
+        FLEX_CLIENT_ID, clientId, messageId, etc...
+
+        :rtype: str
+        """
+        return str(uuid.uuid4())
+
 
     class __amf__:
         static = ('body', 'clientId', 'destination', 'headers', 'messageId',
             'timestamp', 'timeToLive')
 
-    __slots__ = __amf__.static
+    __slots__ = ['context']
+    __slots__.extend(__amf__.static)
 
     def __init__(self, **kwargs):
         self.body = kwargs.pop('body', None)
@@ -71,6 +113,7 @@ class AbstractMessage(object):
         self.messageId = kwargs.pop('messageId', None)
         self.timestamp = kwargs.pop('timestamp', None)
         self.timeToLive = kwargs.pop('timeToLive', None)
+        self.context = kwargs.pop('context', None)
 
     def __repr__(self):
         m = '<%s' % self.__class__.__name__
@@ -87,6 +130,40 @@ class AbstractMessage(object):
         """
         raise NotImplementedError
 
+    def acknowledge(self, msg):
+        """
+        Set FLEX_CLIENT_ID, clientId and correlationId
+        with values from an existing message.
+
+        :param msg: AbstractMessage to acknowledge
+        :type  msg: :class:`AbstractMessage`
+        """
+
+        # CorrelationId is == to
+        # the messageId of the message
+        # being acknowledged.
+        self.correlationId = msg.messageId
+
+        # FLEXT_CLIENT_ID identifies
+        # a client connection.
+        self.headers[self.FLEX_CLIENT_ID] = msg.headers.get(self.FLEX_CLIENT_ID, None) 
+
+        # clientId identifies the
+        # individual MessageAgent sending
+        # or recieving the message.
+        if msg.clientId is None:
+            self.clientId = self.generateId()
+        else:
+            self.clientId = msg.clientId
+
+    def respond(self):
+        """
+        Invoked when message is received.
+        Override in sub-class.
+
+        :raises: :class:`InvalidOperationError`
+        """
+        raise MessageError("Cannot respond to AbstractMessage.")
 
 class AsyncMessage(AbstractMessage):
     """
@@ -174,6 +251,49 @@ class CommandMessage(AsyncMessage):
 
         return small.CommandMessageExt(self)
 
+    def respond(self):
+        """
+        :raises: :class:`InvalidOperationError`
+
+        :rtype: :class:`Deferred`
+        """
+        if self.operation < 0 or \
+            self.operation > len(self.__class__._operation_map):
+            raise InvalidOperationError(
+                "Invalid command operation: '%s'" % self.operation)
+
+        return self._operation_map[self.operation](self)
+
+    def operationNotImplemented(self):
+        """
+        Place holder for operations that haven't been implemented yet.
+        """
+        raise OperationNotImplementedError(
+            "Not operation not implemented: '%s'" % self.operation)
+
+    def ping(self):
+        """
+        Used to test the connectivity over the current channel.
+        """
+        msg = AcknowledgeMessage()
+        msg.acknowledge(self)
+        return [msg]
+
+    _operation_map = (
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        ping,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+        operationNotImplemented,
+    )
 
 class ErrorMessage(AcknowledgeMessage):
     """

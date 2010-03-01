@@ -108,7 +108,7 @@ class AmFastEncoder(object):
 
         return EncoderContext(**kwargs);
 
-    def encode(self, r_msg, msgs):
+    def encodePacket(self, r_msg, msgs):
         """
         Returns encoded AMF packet.
 
@@ -158,7 +158,7 @@ class AmFastDecoder(object):
     def _getContext(self, input):
         return DecoderContext(input, amf3=True, class_def_mapper=self.class_def_mapper)
 
-    def decode(self, raw_packet):
+    def decodePacket(self, raw_packet):
         """
         Decodes an AMF packet and returns a Flex message.
 

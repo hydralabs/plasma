@@ -20,7 +20,7 @@ class PyAmfEncoder(object):
     Uses PyAmf to encode Flex messages.
     """ 
 
-    def encode(self, r_msg, msgs):
+    def encodePacket(self, r_msg, msgs):
         """
         Returns encoded AMF packet.
 
@@ -67,7 +67,7 @@ class PyAmfDecoder(object):
     Uses PyAmf to decode Flex messages.
     """
     
-    def decode(self, raw_packet):
+    def decodePacket(self, raw_packet):
         """
         Decodes an AMF packet and returns a Flex message.
 

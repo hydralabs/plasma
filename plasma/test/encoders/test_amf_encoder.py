@@ -42,10 +42,10 @@ class AmfEncoderTestCase(unittest.TestCase):
         m = messages.AcknowledgeMessage()
         m.correlationId = "Id297cc0a-7798-4ffd-a677-09708eeb733c"
         r_msg = self.getRequestMessage("/6")
-        encoded = self.getEncoder().encode(r_msg, (m,))
+        encoded = self.getEncoder().encodePacket(r_msg, (m,))
         self.assertEquals(encoded, self.async_response_bytes)
 
     def test_decodeAsyncMessage(self):
-        m = self.getDecoder().decode(self.async_request_bytes)[0]
+        m = self.getDecoder().decodePacket(self.async_request_bytes)[0]
         self.assertEquals("Hello World!", m.body)
         self.assertTrue(isinstance(m.context, message_context.AmfMessageContext))
