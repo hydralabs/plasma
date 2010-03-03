@@ -1,9 +1,13 @@
+from twisted.internet import defer
+
+from errors import ConnectionNotFoundError
+
 class ConnectionManager(object):
     """
     Loads and saves Connection objects.
     """
 
-    def _handleLoadFailure(failure, id):
+    def _handleLoadFailure(self, failure, id):
         """
         If self.load fails with a
         ConnectionNotFoundError, 

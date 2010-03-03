@@ -1,3 +1,9 @@
+import time
+
+from connection import Connection
+from connection_manager import ConnectionManager
+from errors import ConnectionNotFoundError, DuplicateConnectionIdError
+
 class MemoryConnectionManager(ConnectionManager):
     """
     Stores Connection objects in memory.
@@ -14,9 +20,10 @@ class MemoryConnectionManager(ConnectionManager):
         :param id: FLEX_CLIENT_ID of connection to load.
         :type  id: str
         :rtype: :class:`Connection`
+        :raises: :class:`DuplicateConnectionIdError` when connection with id already exists.
         """
         if id in self._connections:
-            raise DuplicateConnectionIdError()
+            raise DuplicateConnectionIdError("Connection id already exists.")
         return Connection(id, last_active=time.time())
 
     def load(self, id):
@@ -29,7 +36,7 @@ class MemoryConnectionManager(ConnectionManager):
         :raises: :class:`ConnectionNotFoundError` when connection does not exist
         """
         if id not in self._connections:
-            raise ConnectionNotFoundError()
+            raise ConnectionNotFoundError("Connection not found.")
 
         data = self._connections[id]
         return Connection(data['id'], last_active=data['last_active'],
@@ -103,4 +110,4 @@ class MemoryConnectionManager(ConnectionManager):
            except StopIteration:
                pass
 
-       _cleanLater()
+        _cleanLater()
