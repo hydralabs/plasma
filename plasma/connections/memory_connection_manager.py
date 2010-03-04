@@ -1,5 +1,7 @@
 import time
 
+from twisted.internet import defer, reactor
+
 from connection import Connection
 from connection_manager import ConnectionManager
 from errors import ConnectionNotFoundError, DuplicateConnectionIdError
@@ -82,7 +84,7 @@ class MemoryConnectionManager(ConnectionManager):
         :type cutoff: float
         """
         if id in self._connections:
-            if self._connetions[id]['last_active'] < cutoff:
+            if self._connections[id]['last_active'] < cutoff:
                 self.delete(id)
 
     def cleanAll(self, cutoff):
@@ -101,13 +103,15 @@ class MemoryConnectionManager(ConnectionManager):
         # Use keys() instead of iterkeys() in-case
         # another function changes self._connections.
         iter = self._connections.keys().__iter__()
-        
+        d = defer.Deferred() 
         def _cleanLater():
            try:
                id = iter.next()
                self.clean(id, cutoff)
-               defer.callLater(0, _cleanLater)
+               reactor.callLater(0, _cleanLater)
            except StopIteration:
+               d.callback(None)
                pass
 
-        _cleanLater()
+        reactor.callLater(0, _cleanLater)
+        return d

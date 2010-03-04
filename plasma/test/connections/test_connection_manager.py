@@ -1,3 +1,5 @@
+import time
+
 from twisted.internet import defer
 from twisted.trial import unittest
 
@@ -74,7 +76,46 @@ class ConnectionManagerTestCase(unittest.TestCase):
         d.addCallback(_saveConnection)
 
     def test_clean(self):
-        pass
+        id = 'new id'
+        def _assertConnectionNotFound(failure):
+            self.assertIsInstance(failure.value, ConnectionNotFoundError)
+
+        def _assertCleaned(result, id):
+            d = defer.maybeDeferred(self.manager.load, id)
+            d.addCallback(self.failCallback, "Connection not cleaned.")
+            d.addErrback(_assertConnectionNotFound)
+
+        def _clean(result, connection):
+            time.sleep(1)
+            d = defer.maybeDeferred(self.manager.clean, connection.id, time.time())
+            d.addCallback(_assertCleaned, connection.id)
+
+        def _saveConnection(connection):
+            d = defer.maybeDeferred(self.manager.save, connection)
+            d.addCallback(_clean, connection)
+
+        d = self.manager.get(id)
+        d.addCallback(_saveConnection)
 
     def test_cleanAll(self):
-        pass
+        id = 'new id'
+
+        def _assertConnectionNotFound(failure):
+            self.assertIsInstance(failure.value, ConnectionNotFoundError)
+
+        def _assertCleaned(result, id):
+            d = defer.maybeDeferred(self.manager.load, id)
+            d.addCallback(self.failCallback, "Connection not cleaned.")
+            d.addErrback(_assertConnectionNotFound)
+       
+        def _cleanAll(result, connection):
+            time.sleep(1)
+            d = defer.maybeDeferred(self.manager.cleanAll, time.time())
+            d.addCallback(_assertCleaned, connection.id)
+
+        def _saveConnection(connection):
+            d = defer.maybeDeferred(self.manager.save, connection)
+            d.addCallback(_cleanAll, connection)
+
+        d = self.manager.get(id)
+        d.addCallback(_saveConnection)
