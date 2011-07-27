@@ -13,6 +13,9 @@
 # serve to show the default value.
 
 import sys, os, time
+from shutil import copyfile
+
+from docutils.core import publish_parts
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -21,12 +24,31 @@ sys.path.insert(0, os.path.abspath('..'))
 sys.path.append(os.path.abspath('.'))
 sys.path.append(os.path.abspath('html'))
 
+def rst2html(input, output):
+    """
+    Create html file from rst file.
+    
+    :param input: Path to rst source file
+    :type: `str`
+    :param output: Path to html output file
+    :type: `str`
+    """
+    file = os.path.abspath(input)
+    rst = open(file, 'r').read()
+    html = publish_parts(rst, writer_name='html')
+    body = html['html_body']
+
+    tmp = open(output, 'w')
+    tmp.write(body)
+    tmp.close()
+    
+    return body
 
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
 
 # Paths that contain templates, relative to this directory.
 templates_path = ['html']
@@ -41,9 +63,8 @@ source_suffix = '.rst'
 #master_doc = 'index'
 
 # create content template for the homepage
-from util import rst2html, copy_file
 readme = rst2html('../README.txt', 'html/intro.html')
-readme = copy_file('../CHANGES.txt', 'changelog.rst')
+readme = copyfile('../CHANGES.txt', 'changelog.rst')
 
 # Location of the Plasma source root folder.
 from plasma.version import version
@@ -150,3 +171,19 @@ htmlhelp_basename = 'plasma' + release.replace('.', '')
 
 # Split the index
 html_split_index = True
+
+
+# -- Options for external links --------------------------------------------------
+
+# refer to the Python standard library.
+intersphinx_mapping = {'python': ('http://docs.python.org', None)}
+
+# A list of regular expressions that match URIs that should
+# not be checked when doing a 'make linkcheck' build (since Sphinx 1.1)
+linkcheck_ignore = [r'http://localhost:\d+/']
+
+# The base url of the Trac instance you want to create links to
+trac_url = 'http://dev.plasmads.org'
+
+# Trac url mapping
+extlinks = {'ticket': (trac_url + '/ticket/%s', '#')}

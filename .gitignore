@@ -9,3 +9,5 @@ build/
 dist/
 cover/
 doc/_build/
+doc/changelog.rst
+doc/html/intro.html
