@@ -11,17 +11,13 @@ Latest Development Source Code
 
 :doc:`../whatsnew/0.1`
 
-We use `Git`_ for source revision control and code sharing.
-
-The Git repository URL for the Plasma project is at
-``git://plasmads.org/plasma.git``.
-
-You can browse all repositories on http://git.plasmads.org
+The Git_ repository URL for the Plasma project is at
+http://github.com/hydralabs/plasma.
 
 The latest revision of Plasma can be checked out with the
 following command::
 
-    git clone git://plasmads.org/plasma.git
+    git clone git://github.com/hydralabs/plasma.git
 
 For installing this development version::
 
