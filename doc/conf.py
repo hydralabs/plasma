@@ -13,6 +13,9 @@
 # serve to show the default value.
 
 import sys, os, time
+from shutil import copyfile
+
+from docutils.core import publish_parts
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -21,12 +24,31 @@ sys.path.insert(0, os.path.abspath('..'))
 sys.path.append(os.path.abspath('.'))
 sys.path.append(os.path.abspath('html'))
 
+def rst2html(input, output):
+    """
+    Create html file from rst file.
+    
+    :param input: Path to rst source file
+    :type: `str`
+    :param output: Path to html output file
+    :type: `str`
+    """
+    file = os.path.abspath(input)
+    rst = open(file, 'r').read()
+    html = publish_parts(rst, writer_name='html')
+    body = html['html_body']
+
+    tmp = open(output, 'w')
+    tmp.write(body)
+    tmp.close()
+    
+    return body
 
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
 
 # Paths that contain templates, relative to this directory.
 templates_path = ['html']
@@ -41,9 +63,8 @@ source_suffix = '.rst'
 #master_doc = 'index'
 
 # create content template for the homepage
-from util import rst2html, copy_file
 readme = rst2html('../README.txt', 'html/intro.html')
-readme = copy_file('../CHANGES.txt', 'changelog.rst')
+readme = copyfile('../CHANGES.txt', 'changelog.rst')
 
 # Location of the Plasma source root folder.
 from plasma.version import version
@@ -96,10 +117,21 @@ pygments_style = 'trac'
 # Options for HTML output
 # -----------------------
 
-# The style sheet to use for HTML and HTML Help pages. A file of that name
-# must exist either in Sphinx' static/ path, or in one of the custom paths
-# given in html_static_path.
-html_style = 'default.css'
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+#
+# Note: you can download the 'beam' theme from:
+# http://github.com/collab-project/sphinx-themes
+# and place it in a 'themes' directory relative to this config file.
+html_theme = 'beam'
+
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+#html_theme_options = {}
+
+# Add any paths that contain custom themes here, relative to this directory.
+html_theme_path = ['themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -108,10 +140,14 @@ html_title = '%s - %s' % (project, description)
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['html/static']
+#html_static_path = ['html/static']
 
 # The name of an image file (.ico) that is the favicon of the docs.
 #html_favicon = 'plasma.ico'
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = None
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -150,3 +186,19 @@ htmlhelp_basename = 'plasma' + release.replace('.', '')
 
 # Split the index
 html_split_index = True
+
+
+# -- Options for external links --------------------------------------------------
+
+# refer to the Python standard library.
+intersphinx_mapping = {'python': ('http://docs.python.org', None)}
+
+# A list of regular expressions that match URIs that should
+# not be checked when doing a 'make linkcheck' build (since Sphinx 1.1)
+linkcheck_ignore = [r'http://localhost:\d+/']
+
+# The base url of the Trac instance you want to create links to
+trac_url = 'http://dev.plasmads.org'
+
+# Trac url mapping
+extlinks = {'ticket': (trac_url + '/ticket/%s', '#')}
